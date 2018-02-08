@@ -1,0 +1,143 @@
+\documentclass{proc}
+\usepackage{url}
+
+\begin{document}
+
+\title{Access path selection in a relational database management system~\cite{selinger1979access}.}
+
+%\author{Selinger et al.}
+
+\maketitle
+
+\section{Abstract / Introduction}
+
+\emph{1. What opportunities/changes that make this work useful and timely?
+2. Why existing approaches fail to make use of these opportunities?
+3. How do you propose to do better?
+4. Why this problem is relevant to the course?
+(1-2 sentences each)} 
+
+SQL is a declarative alternative to imperative data manipulation languages used by IMS and proposed by CODASYL.   
+SQL translates into relational algebra (\emph{RA}), which is built on top of a theoretically sound relational data model.  
+SQL is good because it makes the programmer's life easier by providing data independence so that changes in how the data is physically stored does not affect the SQL queries that developers write to access and manipulate their data.
+
+This development is important because developers currently spend most of their time writing and re-writing their applications whenever there is a change to the schema of the data or how it is stored.  This means developers don't have time to build new features and improve their applications.  SQL can help address this issue, but current SQL execution engines are unacceptably slow and nowhere near the performance of hand-tuned IMS/CODASYL queries.
+
+SQL can translate into many different, but semantically equivalent, relational algebra statements, and each statement can be executed by many possible \emph{query plans},  it is desirable to pick the plan that is fastest to run. This project proposes a way to estimate the cost of executing a query plan, and automatically search the space of all valid query plans for a SQL query to find one that is fast no execute. 
+
+This problem is relevant to the course because data visualization systems are often built on top of data management systems, so making the data management system faster would thus make the data visualization faster.
+
+
+\section{One Sentence Summary}
+\begin{quote}
+\emph{Describe your project in one sentence, in other words, your hypothesis.}
+\end{quote}
+
+We will devise a cost model to give each query plan a score, and use existing equivalence rules to define and search the space of alternative plans to find one with low cost.  Our hypothesis is that this will be competitive with hand-coded execution plans.
+
+\section{Audience and Needs}
+\begin{quote}
+\emph{Who are the audiences for this project? 
+How does it meet their needs? 
+What happens if their needs remain unmet?}
+\end{quote}
+
+This project will impact the academic community as well as every application developer.
+The community benefits because it will validate the hypothesis that declarative lanugages such as SQL can run quickly, and open up a new field of research in data management.
+
+Application developers benefit because they will not need to write imperative data manipulation code, worry about how to hand optimize the code to be fast, and can focus on building application features.
+
+\section{Approach}
+\begin{quote}
+\emph{What is your approach?
+Why do you think it's a good approach and will be successful?}
+\end{quote}
+
+\begin{enumerate}
+\item We will build cost models for individual operators.  Recent advances on disk-based indexes~\cite{bayer2002organization} suggest that we will need different cost models depending on how the data is stored.  We may need to make simplifying assumptions and model the costs based on very simple statistics.
+\item We will combine the per-operator cost models estimate the cost for an entire query plan.
+\item With a cost model, we can now search through the space of all query plans that return the same results.  This space is huge, so we will develop heuristics to reduce the space.   Past experience with IMS has shown that the dominant cost will be combining multiple relations using joins so we will focus on them. The space of possible joins can also be very large, so we will develop a dynamic programming-based approach to search through the space.
+\item Run experiments and show that the plans picked by the optimizer are reasonable.
+\end{enumerate}
+
+\section{(Best Case) Impact}
+\begin{quote}
+\emph{In the best-case scenario, what would be the impact statement (ideal outcome and conclusion) for this project?} 
+\end{quote}
+
+We can show that the optimizer picks reasonable plans that are comparable to hand-optimized plans selected by expert developers.
+
+\section{Milestones}
+\begin{quote}
+\emph{List all major milestones for this project}
+\end{quote}
+
+\begin{enumerate}
+  \item Identify the list of statistics that we can reasonably compute and store in tens of kilobytes of space.
+  \item Develop a cost model for individual operators and show that the model is correlated with reality by running them on synthetic datasets based on what existing IMS customer use.
+  \item Develop a cost model for a full query plan.
+  \item Derive an estimate of the size of the full plan space for a given query plan and show that it is infeasibly large.
+  \item Develop dynamic programming heuristic to search the plan space.
+  \item Run experiments on synthetic datasets to compare the optimizer-picked query plans with hand-optimized query plans.
+\end{enumerate}
+
+\section{Obstacles}
+\begin{quote}
+\emph{What are the major and minor obstacles that could happen? 
+Note that major obstacles are situations where you would consider \textbf{killing} the project. 
+Minor obstacles are things that would delay the project or increase the overall cost in energy, time, people, and money.}
+\end{quote}
+
+\subsection{Major obstacles} 
+
+\begin{itemize}
+  \item If we cannot show decent correlation between individual operator cost models and reality, then the rest of the project may not work.  We will also need to define what ``decent'' means.
+\end{itemize}
+
+\subsection{Minor obstacles}
+
+\begin{itemize}
+  \item We may not have access to computing resources to run any experiments, in which case we will need to focus on theoretical aspects of the work.  This could reduce the impact of the project, however showing that an optimizer is \emph{possible} is still a contribution.
+\end{itemize}
+
+
+\section{Additional Resources}
+\begin{quote}
+\emph{What additional resources do you need to complete this project?}
+\end{quote}
+
+\begin{itemize}
+  \item Some computational time to run our optimizer algorithm to generate some query plans.
+  \item Access to a machine where we can install and run experiments using our current database prototype.
+ \end{itemize}
+ 
+\section{Literature Review}
+\begin{quote}
+\emph{List 5 major publications that are most relevant to this project, and how they are related.}
+\end{quote}
+
+\begin{itemize}
+\item \emph{Background for the project:} This work builds on prior work on relational algebra and the relational model~\cite{codd1970relational}, and on new relational database systems~\cite{stonebraker1976design,astrahan1976system}
+
+\item \emph{Work the project relies and builds on: } Some preliminary work has suggested a language for specifying query plans~\cite{lorie1979access} that we could borrow from.  Also, Recent work~\cite{bayer2002organization} on different ways to store and index data lend credence to the need for different cost models for access data in relations.
+
+\item \emph{Direct competitors: } We could not find existing works on alternative techniques to automatically optimize query plans.
+
+\item \emph{Alternatives to achieve the broader goal: } As stated above, IMS and CODASYL~\cite{taylor1976codasyl} are the main alternative data management systems, but they do not have any automated query optimization.
+
+ \end{itemize}
+
+
+\section{Define Success}
+\begin{quote}
+\emph{When / How do you know if you have succeeded in this project?
+In other words, what is the minimum finding that would make this project a success and publishable?}
+\end{quote}
+
+Simply developing a set of cost models and search heuristics for query plans should be publishable, because an automated optimizer of any sort does not yet exist.  
+
+\bibliographystyle{abbrv}
+\bibliography{prospectus}
+\end{document}
+
+
