@@ -1,5 +1,7 @@
 \documentclass{proc}
 \usepackage{url}
+\usepackage{amssymb}
+
 
 \begin{document}
 
@@ -53,12 +55,11 @@ Application developers benefit because they will not need to write imperative da
 Why do you think it's a good approach and will be successful?}
 \end{quote}
 
-\begin{enumerate}
-\item We will build cost models for individual operators.  Recent advances on disk-based indexes~\cite{bayer2002organization} suggest that we will need different cost models depending on how the data is stored.  We may need to make simplifying assumptions and model the costs based on very simple statistics.
-\item We will combine the per-operator cost models estimate the cost for an entire query plan.
-\item With a cost model, we can now search through the space of all query plans that return the same results.  This space is huge, so we will develop heuristics to reduce the space.   Past experience with IMS has shown that the dominant cost will be combining multiple relations using joins so we will focus on them. The space of possible joins can also be very large, so we will develop a dynamic programming-based approach to search through the space.
-\item Run experiments and show that the plans picked by the optimizer are reasonable.
-\end{enumerate}
+The problem of entity resolution bears some resemblance to that of facial recognition. In both cases, we are less concerned about what a record is or who a face belongs to and more interested in whether two records or two faces are the same. Recent innovations in facial recognition technology uses neural networks trained on a triplet loss function. In a triplet loss network for facial recognition, rather than predicting the class of an input image $X$, the network outputs a multi-dimensional vector embedding $f(X)$ of that image with the constraint that the Euclidean distance between two embeddings of images of two different people is significantly large. That is, let $\mathbb{I}(X)$ be the identity of the person whose face appears in $X$. If $\mathbb{I}(X) = \mathbb{I}(Y)$ and $\mathbb{I}(X) \neq \mathbb{I}(Z)$, then $\left\|f(X) - f(Z) \right\|  \gg \left\|f(X) - f(Y) \right\|$.
+\\\\
+A training instance for such a network consists of a triplet of three images $(A, P, N)$, an anchor, positive, and negative image, respectively, that satisfies $\mathbb{I}(A) = \mathbb{I}(P)$ and $\mathbb{I}(A) \neq \mathbb{I}(N)$. Given said triplet, the loss that they incur on a network is $\mathcal{L}(A, D, P) = \max(0, \left\|f(A) - f(P) \right\|^2 - \left\|f(A) - f(N) \right\|^2 + \alpha)$, where $\alpha$ is a threshold hyperparameter defined prior to training.
+\\\\
+The above loss function has proven successful for face recognition, and we believe it can be applied similarly to entity resolution. To generate triplets,  we will use a \emph{discriminator model} to predict whether pairs of records refer to the same entity. The mispredictions of the discriminator model will either consist of false positives which can be used as the $A, N$ records within a triplet or false negatives which can be used as the $A, P$  records within a triplet. Ideally, we would like to show that given an initial discriminator model, using its mispredictions as training examples for a triplet loss network results in a neural model that outperforms the discriminator.
 
 \section{(Best Case) Impact}
 \begin{quote}
@@ -68,36 +69,33 @@ Why do you think it's a good approach and will be successful?}
 We can show that the optimizer picks reasonable plans that are comparable to hand-optimized plans selected by expert developers.
 
 \section{Milestones}
-\begin{quote}
-\emph{List all major milestones for this project}
-\end{quote}
 
 \begin{enumerate}
-  \item Identify the list of statistics that we can reasonably compute and store in tens of kilobytes of space.
-  \item Develop a cost model for individual operators and show that the model is correlated with reality by running them on synthetic datasets based on what existing IMS customer use.
-  \item Develop a cost model for a full query plan.
-  \item Derive an estimate of the size of the full plan space for a given query plan and show that it is infeasibly large.
-  \item Develop dynamic programming heuristic to search the plan space.
-  \item Run experiments on synthetic datasets to compare the optimizer-picked query plans with hand-optimized query plans.
+  \item Identify datasets tested in previous methodologies that are computational feasible to train on and that we can use as benchmarks.
+  \item Develop an adversarial procedure for generating triplets. This will entail developing a tree-based ensemble and corresponding featurization procedures to generate false positives and false negatives. The accuracy of this procedure may also serve as a benchmark.
+  \item Implement a neural network based on the triplet loss function and compare against benchmark used to generate "hard" negatives.
+  \item Develop data augmentation procedures to generate positive pairs and  improve the performance of the triplet loss network.
+  \item Run experiments on various datasets and compare results with current widespread methods.
 \end{enumerate}
 
 \section{Obstacles}
 \begin{quote}
-\emph{What are the major and minor obstacles that could happen? 
-Note that major obstacles are situations where you would consider \textbf{killing} the project. 
-Minor obstacles are things that would delay the project or increase the overall cost in energy, time, people, and money.}
+\emph{Major obstacles are situations where we would consider \textbf{killing} the project. 
+Minor obstacles are situations that would delay the project or increase the overall cost in energy, time, people, and money.}
 \end{quote}
 
 \subsection{Major obstacles} 
 
 \begin{itemize}
-  \item If we cannot show decent correlation between individual operator cost models and reality, then the rest of the project may not work.  We will also need to define what ``decent'' means.
+  \item If we cannot show that a triplet loss network can at the very least improve on the performance of the initial model used to generate false positives and negatives, it is highly unlikely that said network can compare favorably to the state of the art.
 \end{itemize}
 
 \subsection{Minor obstacles}
 
 \begin{itemize}
-  \item We may not have access to computing resources to run any experiments, in which case we will need to focus on theoretical aspects of the work.  This could reduce the impact of the project, however showing that an optimizer is \emph{possible} is still a contribution.
+  \item The original purpose of the triplet loss function was to enable facial recognition systems to compare new images of faces against a database of faces the system has already trained on. In other words, a facial recognition system is responsible for determining whether a new face is the same as one it has been trained to recognize, but it is not responsible for determining whether two new faces are the same. It is possible the triplet loss function is effective for only the former and not the latter, in which case a triplet loss network would require significantly more training data and computational resources to be effective.
+  \item A typical dataset or even pair of datasets with duplicate entities largely consists of negative pairings. While an initial model such as a random forest can be used to pick out negative pairings most effective for a tripet loss network, we may be constrained by the number of positive pairings, in which case we will need to devise data augmentation methods to generate additional positive pairings to increase the number of training triplets.
+  \item We may discover that the neural network architecture needed to effectively embed records as vectors is prohibitively large for the computational resources available. If so, we should consider training on datasets with fewer attributes or using simpler benchmark models for initially detecting false positives and negatives.
 \end{itemize}
 
 
