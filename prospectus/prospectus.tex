@@ -82,15 +82,15 @@ Minor obstacles are situations that would delay the project or increase the over
 \section{Literature Review}
 
 \begin{itemize}
-\item \emph{Background for the project:} This study applies recent advances in the facial recognition to the problem of entity solution.
+\item This study builds on prior work in entity matching ~\cite{elmagarmid2007duplicate}, particularly the use of supervised learning to differentiate matching and non-matching record pairs ~\cite{kopcke2010evaluation}.
 
-\item \emph{Work the project relies and builds on: } Some works on face recognition have introduced the use of triplet loss function to match the people, which have turned out  successful. We could take their idea and apply it to entity matching. Also, the study in DeepER has suggested word embedding as a metric to compute the string similarities.
+\item Some preliminary work on embedded representations of attributes and entire records suggest a new approach towards calculating the similarity between two records ~\cite{ebraheem2017deeper}. We will build on this direction and borrow the use of the triplet loss function developed for facial recognition ~\cite{schroff2015facenet}.
 
-\item \emph{Direct competitors: } As mentioned above, the study in DeepER used word embedding and deep learning to compute the string similarities and train the model. The researchers of the study has used Stochastic Gradient Descent with back propogation, and their model has outperformed the current state-of-art ML.
+\item We are not aware of other studies applying distance metric learning such as triplet loss to the problem of entity resolution. However, the use of word vector embeddings to genereate distributed representations of records has outperformed the state of the art ~\cite{ebraheem2017deeper}.
 
-\item \emph{Alternatives to achieve the broader goal: } hybrid human-machine workflow and tree-based adversarial generation can be alternatives to perform entity matching more efficiently, reliably, and robustly, but they do not advance the current machine learning mechanism that is commonly used for entity matching.
+\item Hybrid human-machine workflows that combine crowdsourcing and active learning ~\cite{wang2012crowder,gokhale2014corleone} as well as tree-based ensembles for supervised learning ~\cite{varma2017relic} are alternate strands of research towards more efficient and more reliable entity matching.
 
- \end{itemize}
+\end{itemize}
 
 
 \section{Define Success}
@@ -101,8 +101,7 @@ In other words, what is the minimum finding that would make this project a succe
 
 Due to novelty of the idea, whether or not this neural network model can outperform current benchmarks, it is worthwhile to explore and potentially provide reference to future research in the similar direction.
 
-\bibliographystyle{abbrv}
+\bibliographystyle{ieeetr}
 \bibliography{prospectus}
-
 
 \end{document}
