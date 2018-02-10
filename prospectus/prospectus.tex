@@ -1,22 +1,17 @@
 \documentclass{proc}
 \usepackage{url}
 \usepackage{amssymb}
+\usepackage{parskip}
 
 
 \begin{document}
-\title{Access path selection in a relational database management system~\cite{selinger1979access}.}
+\title{Applying triplet loss to entity resolution models}
 
-%\author{Selinger et al.}
+\author{Charissa Ding, Lisa Kim, Derek Zhao}
 
 \maketitle
 
 \section{Abstract / Introduction}
-
-\emph{1. What opportunities/changes that make this work useful and timely?
-2. Why existing approaches fail to make use of these opportunities?
-3. How do you propose to do better?
-4. Why this problem is relevant to the course?
-(1-2 sentences each)} 
 
 Entity resolution refers to the task of identifying records in a dataset that refer to the same entity across different data sources. It is one of the most crucial stages in data integration, and researchers have spent the past few decades studying various methods in order to make this process both accurate and efficient.
 
@@ -27,39 +22,22 @@ In recent years, researchers have made significant progress in Face Recognition 
 This problem is relevant because improving accuracy on entity resolution would greatly improve the overall performance of a data integration task, which is one of the key topics in this course.
 
 \section{One Sentence Summary}
-\begin{quote}
-\emph{Describe your project in one sentence, in other words, your hypothesis.}
-\end{quote}
 
-We will leverage Deep Convolutional Neural Network(DNN), which has shown success in facial recognition tasks, to the problem of entity matching and evaluate the performance of DNN using accuracy rate. Our hypothesis is that this will outperform the current state of art.
+We plan to adapt the use of the triplet loss function which has shown success in facial recognition systems to a deep neural network trained on triplets of database records in hopes that such a model achieves better performance than current state of the art techniques for entity resolution, such as random forests.
 
 \section{Audience and Needs}
-\begin{quote}
-\emph{Who are the audiences for this project? 
-How does it meet their needs? 
-What happens if their needs remain unmet?}
-\end{quote}
 
-This project will be of value to the academic community, database managers, and data wranglers. The success of the project will have a positive impact to the academic community because this will lead to the faster matching, more reliable and efficient de-duplication, more accurate table merging, and will introduce the innovative approach to the problem of entity matching. 
-
-In addition, database managers and data wranglers will profit from this project because they will not have to write extra rules and spend long hours on manually examining records, and therefore, will be able to focus on data modeling.
+This project will be of particular value to the academic community, database managers, and data wranglers. If successful, this project would suggest a new avenue for research in entity resolution. Furthermore, a computationally reasonable model that can resolve entities with high accuracy will lead to more efficient matching, more reliable de-duplication procedures, and more accurate table merging. At its most practical, database managers and data wranglers might be saved substantial amounts of time that would otherwise be spent writing rules and manually examining recors.
 
 \section{Approach}
-\begin{quote}
-\emph{What is your approach?
-Why do you think it's a good approach and will be successful?}
-\end{quote}
 
 The problem of entity resolution bears some resemblance to that of facial recognition. In both cases, we are less concerned about what a record is or who a face belongs to and more interested in whether two records or two faces are the same. Recent innovations in facial recognition technology uses neural networks trained on a triplet loss function. In a triplet loss network for facial recognition, rather than predicting the class of an input image $X$, the network outputs a multi-dimensional vector embedding $f(X)$ of that image with the constraint that the Euclidean distance between two embeddings of images of two different people is significantly large. That is, let $\mathbb{I}(X)$ be the identity of the person whose face appears in $X$. If $\mathbb{I}(X) = \mathbb{I}(Y)$ and $\mathbb{I}(X) \neq \mathbb{I}(Z)$, then $\left\|f(X) - f(Z) \right\|  \gg \left\|f(X) - f(Y) \right\|$.
-\\\\
+
 A training instance for such a network consists of a triplet of three images $(A, P, N)$, an anchor, positive, and negative image, respectively, that satisfies $\mathbb{I}(A) = \mathbb{I}(P)$ and $\mathbb{I}(A) \neq \mathbb{I}(N)$. Given said triplet, the loss that they incur on a network is $\mathcal{L}(A, D, P) = \max(0, \left\|f(A) - f(P) \right\|^2 - \left\|f(A) - f(N) \right\|^2 + \alpha)$, where $\alpha$ is a threshold hyperparameter defined prior to training.
-\\\\
+
 The above loss function has proven successful for face recognition, and we believe it can be applied similarly to entity resolution. To generate triplets,  we will use a \emph{discriminator model} to predict whether pairs of records refer to the same entity. The mispredictions of the discriminator model will either consist of false positives which can be used as the $A, N$ records within a triplet or false negatives which can be used as the $A, P$  records within a triplet. Ideally, we would like to show that given an initial discriminator model, using its mispredictions as training examples for a triplet loss network results in a neural model that outperforms the discriminator.
 
 \section{(Best Case) Impact}
-\begin{quote}
-\emph{In the best-case scenario, what would be the impact statement (ideal outcome and conclusion) for this project?} 
-\end{quote}
 
 We can show that the algorithm produces better results than the state-of-the-art approach and scales well to larger datasets.
 
@@ -95,9 +73,6 @@ Minor obstacles are situations that would delay the project or increase the over
 
 
 \section{Additional Resources}
-\begin{quote}
-\emph{What additional resources do you need to complete this project?}
-\end{quote}
 
 \begin{itemize}
   \item Some computational time to run our neural network algorithm.
@@ -105,9 +80,6 @@ Minor obstacles are situations that would delay the project or increase the over
 \end{itemize}
  
 \section{Literature Review}
-\begin{quote}
-\emph{List 5 major publications that are most relevant to this project, and how they are related.}
-\end{quote}
 
 \begin{itemize}
 \item \emph{Background for the project:} This study applies recent advances in the facial recognition to the problem of entity solution.
