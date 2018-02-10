@@ -19,16 +19,13 @@
 4. Why this problem is relevant to the course?
 (1-2 sentences each)} 
 
-SQL is a declarative alternative to imperative data manipulation languages used by IMS and proposed by CODASYL.   
-SQL translates into relational algebra (\emph{RA}), which is built on top of a theoretically sound relational data model.  
-SQL is good because it makes the programmer's life easier by providing data independence so that changes in how the data is physically stored does not affect the SQL queries that developers write to access and manipulate their data.
+Entity resolution refers to the task of identifying records in a dataset that refer to the same entity across different data sources. It is one of the most crucial stages in data integration, and researchers have spent the past few decades studying various methods in order to make this process both accurate and efficient.
 
-This development is important because developers currently spend most of their time writing and re-writing their applications whenever there is a change to the schema of the data or how it is stored.  This means developers don't have time to build new features and improve their applications.  SQL can help address this issue, but current SQL execution engines are unacceptably slow and nowhere near the performance of hand-tuned IMS/CODASYL queries.
+The most fundamental technique used in entity resolution is to calculate similarity metrics between a pair of records and setting a threshold to decide whether the pair is a match~\cite{elmagarmid2007duplicate}. Additional efforts have been built upon this method, including machine-learning mechanisms such as random forest~\cite{varma2017relic} and decision tree ensembles~\cite{yi2017method}, as well as crowdsourcing~\cite{gokhale2014corleone,wang2012crowder}. Some of the ongoing research on the subject utilizes deep learning algorithms~\cite{ebraheem2017deeper} and introduces tree-based adversarial generation [Euegen Wu proposal???]. However, these models typically cannot achieve 100\% accuracy and make incorrect predictions on some records [Euegen Wu proposal???]. 
 
-SQL can translate into many different, but semantically equivalent, relational algebra statements, and each statement can be executed by many possible \emph{query plans},  it is desirable to pick the plan that is fastest to run. This project proposes a way to estimate the cost of executing a query plan, and automatically search the space of all valid query plans for a SQL query to find one that is fast no execute. 
+In recent years, researchers have made significant progress in Face Recognition utilizing a deep convolutional network trained with triplet loss function, setting a new record accuracy of 99.63\%~\cite{schroff2015facenet}. In this prospectus, we propose to apply this method to the entity resolution problem, in hope to improve both accuracy and efficiency.
 
-This problem is relevant to the course because data visualization systems are often built on top of data management systems, so making the data management system faster would thus make the data visualization faster.
-
+This problem is relevant because improving accuracy on entity resolution would greatly improve the overall performance of a data integration task, which is one of the key topics in this course.
 
 \section{One Sentence Summary}
 \begin{quote}
@@ -66,7 +63,7 @@ The above loss function has proven successful for face recognition, and we belie
 \emph{In the best-case scenario, what would be the impact statement (ideal outcome and conclusion) for this project?} 
 \end{quote}
 
-We can show that the optimizer picks reasonable plans that are comparable to hand-optimized plans selected by expert developers.
+We can show that the algorithm produces better results than the state-of-the-art approach and scales well to larger datasets.
 
 \section{Milestones}
 
@@ -105,9 +102,9 @@ Minor obstacles are situations that would delay the project or increase the over
 \end{quote}
 
 \begin{itemize}
-  \item Some computational time to run our optimizer algorithm to generate some query plans.
-  \item Access to a machine where we can install and run experiments using our current database prototype.
- \end{itemize}
+  \item Some computational time to run our neural network algorithm.
+  \item Access to a GPU-enabled server in order to perform parallel processing in the neural network model. 
+\end{itemize}
  
 \section{Literature Review}
 \begin{quote}
@@ -132,7 +129,7 @@ Minor obstacles are situations that would delay the project or increase the over
 In other words, what is the minimum finding that would make this project a success and publishable?}
 \end{quote}
 
-Simply developing a set of cost models and search heuristics for query plans should be publishable, because an automated optimizer of any sort does not yet exist.  
+Due to novelty of the idea, whether or not this neural network model can outperform current benchmarks, it is worthwhile to explore and potentially provide reference to future research in the similar direction.
 
 \bibliographystyle{abbrv}
 \bibliography{prospectus}
