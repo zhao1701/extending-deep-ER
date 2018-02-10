@@ -13,13 +13,13 @@
 
 \section{Abstract / Introduction}
 
-Entity resolution refers to the task of identifying records in a dataset that refer to the same entity across different data sources. It is one of the most crucial stages in data integration, and researchers have spent the past few decades studying various methods in order to make this process both accurate and efficient.
+Entity resolution refers to the task of identifying records from different data sources that refer to the same entity. It is one of the most crucial stages in data integration, and has been spent the past few decades studying various methods to make this process both accurate and efficient.
 
-The most fundamental technique used in entity resolution is to manually design and calculate similarity metrics between a pair of records and setting a threshold to decide whether the pair is a match~\cite{elmagarmid2007duplicate}. Additional efforts have been built upon this method, including machine-learning algorithms such as decision tree ensembles~\cite{varma2017relic, yi2017method}, as well as crowdsourcing~\cite{gokhale2014corleone,wang2012crowder}. Some of the most recent research efforts on the subject explore techniques such as deep learning algorithms~\cite{ebraheem2017deeper} and tree-based adversarial generation. While these models can achieve near-perfect accuracy on datasets that are well structured and have little noise, they struggle to perform well with datasets that are noisy and have unstructured attributes~\cite{ebraheem2017deeper}.
+The most fundamental technique used in entity resolution is to manually design and calculate similarity metrics between a pair of records and setting a threshold to decide whether the pair is a match~\cite{elmagarmid2007duplicate}. Additional efforts have been built upon this technique, including machine-learning algorithms such as decision tree ensembles~\cite{varma2017relic, yi2017method}, as well as combinations of active learning and crowdsourcing~\cite{gokhale2014corleone,wang2012crowder}. Some of the most recent research efforts on the subject explore techniques such as deep learning algorithms~\cite{ebraheem2017deeper} and tree-based adversarial generation. While these models can achieve near-perfect accuracy on datasets that are well structured and have little noise, they struggle to perform well with datasets that are noisy and have unstructured attributes~\cite{ebraheem2017deeper}.
 
-In recent years, researchers have made significant progress in face recognition utilizing a deep convolutional network trained with triplet loss function, setting a new record accuracy of 99.63\% on the widely used Labeled Faces in the Wild (LFW) dataset with more than 13,000 face images~\cite{schroff2015facenet}. In this prospectus, we propose to apply this method to the entity resolution problem, aiming to build a model that is both accurate and robust as the level of complexity and amount of noise grow in a given dataset.
+In recent years, researchers have made significant progress in face recognition utilizing a deep convolutional network trained with triplet loss function, setting a new record accuracy of 99.63\% on the widely used Labeled Faces in the Wild (LFW) dataset with more than 13,000 face images~\cite{schroff2015facenet}. In this project, we propose to apply this method to the entity resolution problem, aiming to build a model that is both accurate and robust as the level of complexity and amount of noise grow in a given dataset.
 
-This problem is relevant because improving accuracy on entity resolution would greatly improve the overall performance of a data integration task, which is one of the key topics in this course.
+This problem is relevant because improving accuracy on entity resolution would greatly improve the overall performance of a data integration task, one of the key topics in this course.
 
 \section{One Sentence Summary}
 
@@ -27,7 +27,7 @@ We plan to adapt the use of the triplet loss function which has shown success in
 
 \section{Audience and Needs}
 
-This project will be of particular value to the academic community, database managers, and data wranglers. If successful, this project would suggest a new avenue for research in entity resolution. Furthermore, a computationally reasonable model that can resolve entities with high accuracy will lead to more efficient matching, more reliable de-duplication procedures, and more accurate table merging. At its most practical, database managers and data wranglers might be saved substantial amounts of time that would otherwise be spent writing rules and manually examining recors.
+This project will be of particular value to the academic community, database managers, and data wranglers. If successful, this project would suggest a new avenue for research in entity resolution. Furthermore, a computationally reasonable model that can resolve entities with high accuracy will lead to more efficient matching, more reliable de-duplication procedures, and more accurate table merging. At its most practical, database managers and data wranglers might be saved substantial amounts of time that would otherwise be spent writing rules and manually examining records.
 
 \section{Approach}
 
@@ -39,13 +39,14 @@ The above loss function has proven successful for face recognition, and we belie
 
 \section{(Best Case) Impact}
 
-We can show that the algorithm produces more accurate results than state-of-the-art ML and crowd approaches, and also exceeds our direct competitor the deepER algorithm, which on average have a 0.6 to 0.8 F-measure on challenging and noisy datasets~\cite{ebraheem2017deeper}. In addition, our model should also preserve fast runtime and does not require prohibitive amounts of training data. 
+We can show that the algorithm produces more accurate results than state-of-the-art ML and crowd approaches, including the deepER algorithm, which on average has a 0.6 to 0.8 F-measure on challenging and noisy datasets~\cite{ebraheem2017deeper}. In addition, our model should also preserve fast runtimes and not require prohibitive amounts of training data. 
 
 \section{Milestones}
 
 \begin{enumerate}
   \item Identify datasets tested in previous methodologies that are computational feasible to train on and that we can use as benchmarks.
   \item Develop an adversarial procedure for generating triplets. This will entail developing a tree-based ensemble and corresponding featurization procedures to generate false positives and false negatives. The accuracy of this procedure may also serve as a benchmark.
+  \item Design a reasonable means of featurizing records as input for a neural network.
   \item Implement a neural network based on the triplet loss function and compare against benchmark used to generate "hard" negatives.
   \item Develop data augmentation procedures to generate positive pairs and  improve the performance of the triplet loss network.
   \item Run experiments on various datasets and compare results with current widespread methods.
@@ -94,12 +95,8 @@ Minor obstacles are situations that would delay the project or increase the over
 
 
 \section{Define Success}
-\begin{quote}
-\emph{When / How do you know if you have succeeded in this project?
-In other words, what is the minimum finding that would make this project a success and publishable?}
-\end{quote}
 
-Developing a model that can exceed the entity resolution accuracy set by state-of-the-art machine learning and crowd approaches would make this project a success and publishable, particularly if our model shows high accuracy when a training dataset is high in noise and have unstructured attributes.
+Developing a model that can exceed the entity resolution accuracy set by state-of-the-art machine learning and crowd-sourcing approaches would be considered a success, particularly if our model shows high accuracy given noisy training data.
 
 \bibliographystyle{ieeetr}
 \bibliography{prospectus}
