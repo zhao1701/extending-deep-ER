@@ -4,7 +4,6 @@
 
 
 \begin{document}
-
 \title{Access path selection in a relational database management system~\cite{selinger1979access}.}
 
 %\author{Selinger et al.}
@@ -32,7 +31,7 @@ This problem is relevant because improving accuracy on entity resolution would g
 \emph{Describe your project in one sentence, in other words, your hypothesis.}
 \end{quote}
 
-We will devise a cost model to give each query plan a score, and use existing equivalence rules to define and search the space of alternative plans to find one with low cost.  Our hypothesis is that this will be competitive with hand-coded execution plans.
+We will leverage Deep Convolutional Neural Network(DNN), which has shown success in facial recognition tasks, to the problem of entity matching and evaluate the performance of DNN using accuracy rate. Our hypothesis is that this will outperform the current state of art.
 
 \section{Audience and Needs}
 \begin{quote}
@@ -41,10 +40,9 @@ How does it meet their needs?
 What happens if their needs remain unmet?}
 \end{quote}
 
-This project will impact the academic community as well as every application developer.
-The community benefits because it will validate the hypothesis that declarative lanugages such as SQL can run quickly, and open up a new field of research in data management.
+This project will be of value to the academic community, database managers, and data wranglers. The success of the project will have a positive impact to the academic community because this will lead to the faster matching, more reliable and efficient de-duplication, more accurate table merging, and will introduce the innovative approach to the problem of entity matching. 
 
-Application developers benefit because they will not need to write imperative data manipulation code, worry about how to hand optimize the code to be fast, and can focus on building application features.
+In addition, database managers and data wranglers will profit from this project because they will not have to write extra rules and spend long hours on manually examining records, and therefore, will be able to focus on data modeling.
 
 \section{Approach}
 \begin{quote}
@@ -112,13 +110,13 @@ Minor obstacles are situations that would delay the project or increase the over
 \end{quote}
 
 \begin{itemize}
-\item \emph{Background for the project:} This work builds on prior work on relational algebra and the relational model~\cite{codd1970relational}, and on new relational database systems~\cite{stonebraker1976design,astrahan1976system}
+\item \emph{Background for the project:} This study applies recent advances in the facial recognition to the problem of entity solution.
 
-\item \emph{Work the project relies and builds on: } Some preliminary work has suggested a language for specifying query plans~\cite{lorie1979access} that we could borrow from.  Also, Recent work~\cite{bayer2002organization} on different ways to store and index data lend credence to the need for different cost models for access data in relations.
+\item \emph{Work the project relies and builds on: } Some works on face recognition have introduced the use of triplet loss function to match the people, which have turned out  successful. We could take their idea and apply it to entity matching. Also, the study in DeepER has suggested word embedding as a metric to compute the string similarities.
 
-\item \emph{Direct competitors: } We could not find existing works on alternative techniques to automatically optimize query plans.
+\item \emph{Direct competitors: } As mentioned above, the study in DeepER used word embedding and deep learning to compute the string similarities and train the model. The researchers of the study has used Stochastic Gradient Descent with back propogation, and their model has outperformed the current state-of-art ML.
 
-\item \emph{Alternatives to achieve the broader goal: } As stated above, IMS and CODASYL~\cite{taylor1976codasyl} are the main alternative data management systems, but they do not have any automated query optimization.
+\item \emph{Alternatives to achieve the broader goal: } hybrid human-machine workflow and tree-based adversarial generation can be alternatives to perform entity matching more efficiently, reliably, and robustly, but they do not advance the current machine learning mechanism that is commonly used for entity matching.
 
  \end{itemize}
 
@@ -133,6 +131,6 @@ Due to novelty of the idea, whether or not this neural network model can outperf
 
 \bibliographystyle{abbrv}
 \bibliography{prospectus}
+
+
 \end{document}
-
-
