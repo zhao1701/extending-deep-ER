@@ -50,12 +50,14 @@ df1 = pd.read_csv(os.path.join(source_dir, set1), encoding = "latin1")
 df2 = pd.read_csv(os.path.join(source_dir, set2), encoding = "latin1")
 df_pos = pd.read_csv(os.path.join(source_dir, matches), encoding = "latin1")
 
+# make column names the same
+assert(df1.columns[0] == 'id1')
+assert(df2.columns[0] == 'id2')
+df2.columns = [df2.columns[0]] + list(df1.columns[1:])
+
 # load double dictionary
 with open(mapping_file, 'rb') as f:
     map = pkl.load(f)
-
-# change word2idx to a default dictionary that outputs 0 for unknown tokens
-map['word2idx'] = defaultdict(int, map['word2idx'])
 
 def clean_text(x):
     "formats a single string"

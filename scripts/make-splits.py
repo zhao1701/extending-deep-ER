@@ -159,7 +159,12 @@ if not os.path.isdir(destination_path):
     os.mkdir(destination_path)
     if verbose:
         print('Creating destination directory.')
-    
+        
+# convert 'y' Series to dataframes to avoid header import mismatches
+df_train_y = pd.DataFrame(df_train_y)
+df_val_y = pd.DataFrame(df_val_y)
+df_test_y = pd.DataFrame(df_test_y)
+
 # save newly split dataframes in specified destination
 df_train_1.to_csv(os.path.join(destination_path, 'train_1.csv'), index=False)
 df_train_2.to_csv(os.path.join(destination_path, 'train_2.csv'), index=False)
@@ -167,7 +172,7 @@ df_train_y.to_csv(os.path.join(destination_path, 'train_y.csv'), index=False)
 
 df_val_1.to_csv(os.path.join(destination_path, 'val_1.csv'), index=False)
 df_val_2.to_csv(os.path.join(destination_path, 'val_2.csv'), index=False)
-df_val_y.to_csv(os.path.join(destination_path, 'val_3.csv'), index=False)
+df_val_y.to_csv(os.path.join(destination_path, 'val_y.csv'), index=False)
 
 df_test_1.to_csv(os.path.join(destination_path, 'test_1.csv'), index=False)
 df_test_2.to_csv(os.path.join(destination_path, 'test_2.csv'), index=False)

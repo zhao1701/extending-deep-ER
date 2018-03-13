@@ -3,7 +3,9 @@ import numpy as np
 import pandas as pd
 import pickle as pkl
 import argparse as ap
+
 from gensim.models import KeyedVectors
+from collections import defaultdict
 
 # parse command-line arguments
 parser = ap.ArgumentParser()
@@ -50,8 +52,12 @@ np.save(file='../data/embeddings/{}-300.matrix'.format(model_name),
 # create and save two maps of corpus vocabulary
 print('creating maps')
 vocab = ['<unk>'] + list(model.vocab.keys())
-word2idx = dict(zip(vocab, range(len(vocab))))
+word2idx = defaultdict(int, zip(vocab, range(len(vocab))))
 idx2word = dict(zip(range(len(vocab)), vocab))
+
+# manually encode NaN's as unknown
+for nan in ['NaN', 'NAN', 'nan', 'Nan']:
+    word2idx[nan] = 0
 
 map = dict()
 map['word2idx'] = word2idx
