@@ -48,6 +48,6 @@ def hyperopt_val_diagnostic(val_name, trials):
     axes[2].set(xlabel=val_name, ylabel='loss')
     plt.tight_layout()
     
-def visualize_hyperparameters(trials)
+def visualize_hyperparameters(trials):
     for val in trials.trials[0]['misc']['vals'].keys():
         hyperopt_val_diagnostic(val, trials)
