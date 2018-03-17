@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import pickle as pkl
 import os
 
 # DATA HANDLING
@@ -31,6 +32,23 @@ def load_data(data_dir, filenames=['test_1', 'test_2', 'test_y',
         df.loc[:, str_list_mask] = df.loc[:, str_list_mask].applymap(str_to_list)
         data[filename] = df
     return data
+
+def df_idx_to_words(x, mapping_file = '../data/embeddings/glove-300.map'):
+    
+    with open(mapping_file, 'rb') as f:
+        map = pkl.load(f)
+        
+    def idx_list_to_words(x):
+        string = ''
+        for idx in x:
+            string = string + ' ' + map['idx2word'][idx]
+        return string
+    
+    df = x.copy()
+    idx_mask = x.apply(is_str_list)
+    df_idx = df.loc[:, idx_mask]
+    df.loc[:, idx_mask] = df.loc[:, idx_mask].applymap(idx_list_to_words)
+    return df
 
 # HYPEROPT VISUALIZATIONS
 
