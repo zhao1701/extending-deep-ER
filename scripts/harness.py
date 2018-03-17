@@ -73,7 +73,7 @@ class TrainingHarness():
         self._compile_args = compile_args
         
         if model:
-            self.model = model
+            self.model = model.copy()
             self.model.compile(**compile_args)
             self._architecture = self.model.to_json()
             self._current_weights = self._get_trainable_weights()
@@ -247,17 +247,15 @@ class TrainingHarness():
         for key, value in args.items():
             fit_args[key] = value
             
-        epochs = fit_args.pop('epochs')
-        for i in range(epochs):
-            history = self.model.fit(**fit_args, epochs=1)
-            
-            for metric in list(self.history.keys()):      
-                self.history[metric]['train'].extend(history.history[metric])
-                self.history[metric]['val'].extend(history.history['val_' + metric])
-            
-            if self.history['loss']['val'][-1] < self._best_val_loss:
-                self._best_val_loss = self.history['loss']['val'][-1]
-                self._make_checkpoint()
+        history = self.model.fit(**fit_args, epochs=1)
+
+        for metric in list(self.history.keys()):      
+            self.history[metric]['train'].extend(history.history[metric])
+            self.history[metric]['val'].extend(history.history['val_' + metric])
+
+        if self.history['loss']['val'][-1] < self._best_val_loss:
+            self._best_val_loss = self.history['loss']['val'][-1]
+            self._make_checkpoint()
             
         self._current_weights = self._get_trainable_weights()
     
