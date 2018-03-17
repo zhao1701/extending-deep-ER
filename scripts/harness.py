@@ -44,14 +44,6 @@ class TrainingHarness():
         A dictinoary of default arguments to be used whenever the model's
         fit function is called. The dictionary must include training and
         validation_data.
-    metrics : list
-        A list of strings enumerating which metrics the harness should calculate
-        at the end of each training epoch. Available options:
-            - 'accuracy'
-            - 'f1'
-            - 'precision'
-            - 'recall'
-            - 'auroc'
     
     Attributes
     ----------
@@ -71,8 +63,7 @@ class TrainingHarness():
     def __init__(self, model=None, n_checkpoints = 10, npy_embedding_matrix = None,
                  compile_args=dict(loss='mean_squared_error',
                                      optimizer='adam'),
-                 fit_args = None,
-                 metrics = ['accuracy', 'f1', 'precision', 'recall', 'auroc']):
+                 fit_args = None):
         
         # need location of saved numpy embedding matrix and model architecture
         # ...in order to load harness from saved state
@@ -98,21 +89,11 @@ class TrainingHarness():
         if fit_args:
             self.set_fit_args(**fit_args)
         
-        self.metrics = dict()
-        if 'accuracy' in metrics:
-            self.metrics['accuracy'] = accuracy_score
-        if 'f1' in metrics:
-            self.metrics['f1'] = f1_score
-        if 'precision' in metrics:
-            self.metrics['precision'] = precision_score
-        if 'recall' in metrics:
-            self.metrics['recall'] = recall_score
-        if 'auroc' in metrics:
-            self.metrics['auroc'] = roc_auc_score
-                
         self.history = dict()
-        for key in list(self.metrics.keys()) + ['loss']:
-            self.history[key] = dict(train=list(), val=list())
+        self.history['loss'] = dict(train=list(), val=list())
+        if 'metrics' in list(self._compile_args.keys()):
+            for key in list(self._compile_args['metrics']):
+                self.history[key] = dict(train=list(), val=list())
             
         self._best_val_loss = np.inf
         
@@ -165,7 +146,6 @@ class TrainingHarness():
                     checkpoint_epochs = self.checkpoint_epochs,
                     current_weights = self._current_weights,
                     fit_args = self._fit_args,
-                    metrics = self.metrics,
                     history = self.history,
                     best_val_loss = self._best_val_loss)
         with open(output_file, 'wb') as f:
@@ -198,7 +178,6 @@ class TrainingHarness():
         self._current_weights = data['current_weights']
         self._fit_args = data['fit_args']
         
-        self.metrics = data['metrics']
         self.history = data['history']
         
         self._best_val_loss = data['best_val_loss']
@@ -272,22 +251,9 @@ class TrainingHarness():
         for i in range(epochs):
             history = self.model.fit(**fit_args, epochs=1)
             
-            y_train = fit_args['y']
-            y_train_pred = self.model.predict(fit_args['x'])
-            
-            y_val = fit_args['validation_data'][1]            
-            y_val_pred = self.model.predict(fit_args['validation_data'][0])
-            
-            for name, fn in self.metrics.items():
-                if name in ['auroc']:
-                    self.history[name]['train'].append(fn(y_train, y_train_pred))
-                    self.history[name]['val'].append(fn(y_val, y_val_pred))
-                else:
-                    self.history[name]['train'].append(fn(y_train, y_train_pred >= 0.5))
-                    self.history[name]['val'].append(fn(y_val, y_val_pred >= 0.5))
-                    
-            self.history['loss']['train'].extend(history.history['loss'])
-            self.history['loss']['val'].extend(history.history['val_loss'])
+            for metric in list(self.history.keys()):      
+                self.history[metric]['train'].extend(history.history[metric])
+                self.history[metric]['val'].extend(history.history['val_' + metric])
             
             if self.history['loss']['val'][-1] < self._best_val_loss:
                 self._best_val_loss = self.history['loss']['val'][-1]
