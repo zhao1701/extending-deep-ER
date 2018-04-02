@@ -42,6 +42,24 @@ def str_to_list_df(x):
 def str_to_num(x):
     return float(re.sub('[^0-9|^\.]', '', x))
 
+def examine_data(set1, set2, columns, bool_mask, mapping):
+    
+    df1 = set1.copy()
+    df2 = set2.copy()
+    
+    def idx_to_word(x):
+        string = ''
+        for idx in x:
+            string += ' ' + mapping['idx2word'][idx]
+        return string
+    
+    df1.loc[:, columns] = df1.loc[:, columns].applymap(idx_to_word)
+    df2.loc[:, columns] = df2.loc[:, columns].applymap(idx_to_word)
+    
+    both = pd.concat([df1, df2], axis=1)
+    both = both.loc[bool_mask, :]
+    return both
+
 # HYPEROPT VISUALIZATIONS
 
 def hyperopt_val_diagnostic(val_name, trials):

@@ -314,6 +314,8 @@ def deep_er_model_generator(data_dict,
         for side, column in it.product(sides, columns):
             input_isna_tensors.append(Input(shape=(1,)))
     
+    num_dense_inputs = len(similarity_tensors) + len(input_isna_tensors)
+    print('Number of inputs to dense layer: {}'.format(num_dense_inputs))
     # concatenate similarity tensors with isna_tensors.
     concatenated_tensors = Concatenate(axis=-1)(similarity_tensors + \
                                                 input_isna_tensors)
