@@ -17,6 +17,7 @@ data/embeddings/*
 data/raw/quora/*
 data/split/*
 data/converted/*
+data/harnesses
 
 # notebook checkpoints
 notebooks/.ipynb_checkpoints/*
