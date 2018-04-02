@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-import pickle as pkl
 import os
+import re
 
 # DATA HANDLING
 def is_str_list(x):
@@ -33,22 +33,14 @@ def load_data(data_dir, filenames=['test_1', 'test_2', 'test_y',
         data[filename] = df
     return data
 
-def df_idx_to_words(x, mapping_file = '../data/embeddings/glove-300.map'):
-    
-    with open(mapping_file, 'rb') as f:
-        map = pkl.load(f)
-        
-    def idx_list_to_words(x):
-        string = ''
-        for idx in x:
-            string = string + ' ' + map['idx2word'][idx]
-        return string
-    
+def str_to_list_df(x):
     df = x.copy()
-    idx_mask = x.apply(is_str_list)
-    df_idx = df.loc[:, idx_mask]
-    df.loc[:, idx_mask] = df.loc[:, idx_mask].applymap(idx_list_to_words)
+    mask = df.apply(is_str_list, axis='rows')
+    df.loc[:, mask] = df.loc[:, mask].applymap(str_to_list)
     return df
+
+def str_to_num(x):
+    return float(re.sub('[^0-9|^\.]', '', x))
 
 # HYPEROPT VISUALIZATIONS
 
@@ -69,3 +61,46 @@ def hyperopt_val_diagnostic(val_name, trials):
 def visualize_hyperparameters(trials):
     for val in trials.trials[0]['misc']['vals'].keys():
         hyperopt_val_diagnostic(val, trials)
+        
+# HELPERS FOR MODEL GENERATION
+
+def get_document_frequencies(raw_data_dir, mapping, set1='set1', set2='set2'):
+    
+    # read csv data from directory as pd.DataFrame
+    set1 = pd.read_csv(os.path.join(raw_data_dir, set1 + '.csv'), encoding='latin1')
+    set2 = pd.read_csv(os.path.join(raw_data_dir, set2 + '.csv'), encoding='latin1')
+    
+    # select only columns whose values are lists embedded as strings
+    mask1 = set1.apply(is_str_list, axis='rows')
+    mask2 = set2.apply(is_str_list, axis='rows')
+    
+    # convert strings back into lists
+    set1 = set1.loc[:, mask1].applymap(str_to_list)
+    set2 = set2.loc[:, mask2].applymap(str_to_list)
+    
+    
+    # concatenate columns so all relevant attributes become a single list
+    def concat_columns(x):
+        idx_list = list()
+        for lst in x.values:
+            idx_list += lst
+        return idx_list
+    
+    set1 = set1.apply(concat_columns, axis='columns')
+    set2 = set2.apply(concat_columns, axis='columns')
+    
+    # +1 because default value of DefaultDict not counted
+    doc_freqs_1 = np.zeros(len(mapping['idx2word'])+1)
+    doc_freqs_2 = np.zeros(len(mapping['idx2word'])+1)
+    
+    for index, item in set1.iteritems():
+        uniq_indices = set(item)
+        for idx in uniq_indices:
+            doc_freqs_1[idx] += 1
+    
+    for index, item in set2.iteritems():
+        uniq_indices = set(item)
+        for idx in uniq_indices:
+            doc_freqs_2[idx] += 1
+    
+    return doc_freqs_1, doc_freqs_2

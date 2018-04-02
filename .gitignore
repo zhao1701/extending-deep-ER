@@ -1,0 +1,24 @@
+
+# the DS_Store
+.DS_Store
+
+# TEX files
+prospectus/prospectus.aux
+prospectus/prospectus.log
+prospectus/prospectus.synctex.gz
+prospectus/prospectus_ding_kim_zhao.pdf
+
+# BIB files
+prospectus.bbl
+prospectus.blg
+
+# large files
+data/embeddings/*
+data/raw/quora/*
+data/split/*
+data/converted/*
+
+# notebook checkpoints
+notebooks/.ipynb_checkpoints/*
+scripts/.ipynb_checkpoints/*
+scripts/__pycache__/
