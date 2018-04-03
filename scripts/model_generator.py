@@ -11,7 +11,8 @@ import pickle as pkl
 import itertools as it
 import tensorflow as tf
 
-from keras.layers import Input, Dense, LSTM, Embedding, Lambda, Dot, Concatenate, Bidirectional
+from keras.layers import Input, Dense, LSTM, Embedding, Lambda, Dot, Concatenate, \
+                         Bidirectional, BatchNormalization, Dropout
 from keras.models import Model
 from keras.preprocessing.sequence import pad_sequences
 from keras.optimizers import Adadelta
@@ -36,7 +37,11 @@ def deep_er_model_generator(data_dict,
                             dense_nodes = [10],
                             lstm_args = dict(units=50),
                             document_frequencies = None,
-                            idf_smoothing = 2):
+                            idf_smoothing = 2,
+                            batch_norm = False,
+                            dropout = 0,
+                            shared_lstm = True,
+                            debug = False):
     """
     Takes a dictionary of paired split DataFrames and returns a DeepER 
     model with data formatted for said model.
@@ -255,16 +260,22 @@ def deep_er_model_generator(data_dict,
                 composed_tensors['idf'][side][column] = dot_layer([embedded_tensors[side][column],
                                                                    idfs_tensor_normalized])
                 
-    # if enabled, compose embedding tensor using LSTM        
+    # if enabled, compose embedding tensor using shared LSTM        
     if 'lstm' in text_compositions:
-        for side, column in it.product(sides, text_columns):
+        if shared_lstm:
             lstm_layer = LSTM(**lstm_args)
+        for side, column in it.product(sides, text_columns):
+            if not shared_lstm:
+                lstm_layer = LSTM(**lstm_args)
             composed_tensors['lstm'][side][column] = lstm_layer(embedded_tensors[side][column])
     
     # if enambled, compose embedding tensor using bi-directional LSTM
     if 'bi_lstm' in text_compositions:
+        if shared_lstm:
+            lstm_layer = lstm_layer = Bidirectional(LSTM(**lstm_args), merge_mode='concat')
         for side, column in it.product(sides, text_columns):
-            lstm_layer = Bidirectional(LSTM(**lstm_args), merge_mode='concat')
+            if not shared_lstm:
+                lstm_layer = Bidirectional(LSTM(**lstm_args), merge_mode='concat')
             composed_tensors['bi_lstm'][side][column] = lstm_layer(embedded_tensors[side][column])
     
     # maintain list of text-based similarities to calculate
@@ -287,6 +298,16 @@ def deep_er_model_generator(data_dict,
         similarity_tensor = similarity_layer([composed_tensors[composition]['left'][column],
                                               composed_tensors[composition]['right'][column]])
         similarity_tensors.append(similarity_tensor)
+        
+    if 'bi_lstm' in text_compositions:
+        difference_layer = Lambda(lambda x: K.abs(x[0]-x[1]))
+        hadamard_layer = Lambda(lambda x: x[0] * x[1])
+        for column in text_columns:
+            difference_tensor = difference_layer([composed_tensors['bi_lstm']['left'][column],
+                                                  composed_tensors['bi_lstm']['right'][column]])
+            hadamard_tensor = hadamard_layer([composed_tensors['bi_lstm']['left'][column],
+                                              composed_tensors['bi_lstm']['right'][column]])
+            similarity_tensors.extend([difference_tensor, hadamard_tensor])
     
     # reset similarity layer to empty so only numeric-based similarities are used
     similarity_layers = list()
@@ -314,7 +335,8 @@ def deep_er_model_generator(data_dict,
         for side, column in it.product(sides, columns):
             input_isna_tensors.append(Input(shape=(1,)))
     
-    num_dense_inputs = len(similarity_tensors) + len(input_isna_tensors)
+    num_dense_inputs = \
+        len(similarity_tensors) + len(input_isna_tensors) - 2 + lstm_args['units'] * len(text_columns)
     print('Number of inputs to dense layer: {}'.format(num_dense_inputs))
     # concatenate similarity tensors with isna_tensors.
     concatenated_tensors = Concatenate(axis=-1)(similarity_tensors + \
@@ -323,13 +345,23 @@ def deep_er_model_generator(data_dict,
     # create dense layers starting with concatenated tensors
     dense_tensors = [concatenated_tensors]
     for n_nodes in dense_nodes:
-        dense_tensors.append(Dense(n_nodes, activation='relu')(dense_tensors[-1]))
+        dense_tensor = Dense(n_nodes, activation='relu')(dense_tensors[-1])
+        if batch_norm and dropout:
+            dense_tensor_bn = BatchNormalization()(dense_tensor)
+            dense_tensor_dropout = Dropout(dropout)(dense_tensor_bn)
+            dense_tensors.append(dense_tensor_dropout)
+        else:
+            dense_tensors.append(dense_tensor)
         dense_tensors.pop(0)
         
     output_tensors = Dense(2, activation='softmax')(dense_tensors[-1])
     
     product = list(it.product(sides, columns))
-    model = Model([input_tensors[s][tc] for s, tc in product] + input_isna_tensors,
-                  [output_tensors])
+    if not debug:
+        model = Model([input_tensors[s][tc] for s, tc in product] + input_isna_tensors,
+                      [output_tensors])
+    else:
+        model = Model([input_tensors[s][tc] for s, tc in product] + input_isna_tensors,
+                      [embedded_tensors['left'][text_columns[0]]])
     
     return tuple([model] + list(packaged_data.values()) + [y_train, y_val, y_test])
