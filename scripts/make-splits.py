@@ -42,8 +42,14 @@ test_prop = args.test_prop
 verbose = args.verbose
 
 df1 = pd.read_csv(os.path.join(source_dir, set1), encoding = "latin1")
+df1['id1'] = df1['id1'].astype(str)
+
 df2 = pd.read_csv(os.path.join(source_dir, set2), encoding = "latin1")
+df2['id2'] = df2['id2'].astype(str)
+
 df_pos = pd.read_csv(os.path.join(source_dir, matches), encoding = "latin1")
+df_pos['id1'] = df_pos['id1'].astype(str)
+df_pos['id2'] = df_pos['id2'].astype(str)
 
 # calculate number of matches available and...
 # number of non-matches that need to be sampled
@@ -54,8 +60,8 @@ if verbose:
           format(n_positives, n_negatives))
     
 # extract id columns from respective datasets
-id1 = df1['id1']
-id2 = df2['id2']
+id1 = df1['id1'].astype(str)
+id2 = df2['id2'].astype(str)
 
 # create a mapping from id1 to a list of matches in id2.
 # when creating non-matches, we can consult dictmap to ensure non-matches...

@@ -312,7 +312,7 @@ def deep_er_model_generator(data_dict,
     # reset similarity layer to empty so only numeric-based similarities are used
     similarity_layers = list()
     if 'scaled_inverse_lp' in numeric_sim_metrics:
-        similarity_layer = Lambda(lambda x: K.exp(-2 * K.abs(x[0]-x[1]) / (x[0] + x[1])))
+        similarity_layer = Lambda(lambda x: K.exp(-2 * K.abs(x[0]-x[1]) / (x[0] + x[1] + 1e-5)))
         similarity_layers.append(similarity_layer)
     if 'unscaled_inverse_lp' in numeric_sim_metrics:
         similarity_layer = Lambda(lambda x: K.exp(-K.abs(x[0]-x[1])))

@@ -23,3 +23,6 @@ data/harnesses
 notebooks/.ipynb_checkpoints/*
 scripts/.ipynb_checkpoints/*
 scripts/__pycache__/
+
+# large models
+data/models/amazon-walmart-base-1-full

@@ -202,6 +202,7 @@ else:
     for word, index in sk_dict.items():
         word2idx[word] = index + 1
         idx2word[index+1] = word
+    
 print('{} unique tokens detected.'.format(len(word2idx)))
     
 print('Building embedding matrix. ', end='')
@@ -221,7 +222,10 @@ print('{} unknown tokens assigned random Gaussian.'.format(n_unknowns))
     
 print('Converting text data to index vectors.')
 def record2idx(x):
-    x = x.split()
+    if not use_sklearn:
+        x = x.split()
+    else:
+        x = x.lower().split()
     return [word2idx[word] for word in x]
 
 df1.loc[:, columns] = df1.loc[:, columns].applymap(record2idx)
