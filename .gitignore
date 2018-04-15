@@ -26,3 +26,4 @@ scripts/__pycache__/
 
 # large models
 data/models/amazon-walmart-base-1-full
+data/models/amazon-walmart-all-full
