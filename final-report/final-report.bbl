@@ -1,0 +1,93 @@
+\begin{thebibliography}{10}
+
+\bibitem{elmagarmid-duplicate-record-detection}
+A.~K. Elmagarmid, P.~G. Ipeirotis, and V.~S. Verykios, ``Duplicate record
+  detection: A survey,'' {\em IEEE Transactions on knowledge and data
+  engineering}, vol.~19, no.~1, pp.~1--16, 2007.
+
+\bibitem{fellegi-theory}
+I.~P. Fellegi and A.~B. Sunter, ``A theory for record linkage,'' {\em Journal
+  of the American Statistical Association}, vol.~64, no.~328, pp.~1183--1210,
+  1969.
+
+\bibitem{naumann-introduction}
+F.~Naumann and M.~Herschel, ``An introduction to duplicate detection,'' {\em
+  Synthesis Lectures on Data Management}, vol.~2, no.~1, pp.~1--87, 2010.
+
+\bibitem{bilenko-adaptive}
+M.~Bilenko and R.~J. Mooney, ``Adaptive duplicate detection using learnable
+  string similarity measures,'' in {\em Proceedings of the Ninth ACM SIGKDD
+  International Conference on Knowledge Discovery and Data Mining}, KDD '03,
+  (New York, NY, USA), pp.~39--48, ACM, 2003.
+
+\bibitem{ebraheem-deep-er}
+M.~Ebraheem, S.~Thirumuruganathan, S.~Joty, M.~Ouzzani, and N.~Tang,
+  ``Deeper--deep entity resolution,'' {\em arXiv preprint arXiv:1710.00597},
+  2017.
+
+\bibitem{mikolov-distributed}
+T.~Mikolov, I.~Sutskever, K.~Chen, G.~S. Corrado, and J.~Dean, ``Distributed
+  representations of words and phrases and their compositionality,'' in {\em
+  Advances in Neural Information Processing Systems 26} (C.~J.~C. Burges,
+  L.~Bottou, M.~Welling, Z.~Ghahramani, and K.~Q. Weinberger, eds.),
+  pp.~3111--3119, Curran Associates, Inc., 2013.
+
+\bibitem{yang-distance}
+L.~Yang and R.~Jin, ``Distance metric learning: A comprehensive survey,'' {\em
+  Michigan State Universiy}, vol.~2, no.~2, 2006.
+
+\bibitem{schroff-facenet}
+F.~Schroff, D.~Kalenichenko, and J.~Philbin, ``Facenet: A unified embedding for
+  face recognition and clustering,'' in {\em Proceedings of the IEEE conference
+  on computer vision and pattern recognition}, pp.~815--823, 2015.
+
+\bibitem{mueller-siamese}
+J.~Mueller and A.~Thyagarajan, ``Siamese recurrent architectures for learning
+  sentence similarity.,'' in {\em AAAI}, pp.~2786--2792, 2016.
+
+\bibitem{pennington-glove}
+J.~Pennington, R.~Socher, and C.~D. Manning, ``Glove: Global vectors for word
+  representation,'' in {\em Empirical Methods in Natural Language Processing
+  (EMNLP)}, pp.~1532--1543, 2014.
+
+\bibitem{goodfellow-deep-learning}
+I.~Goodfellow, Y.~Bengio, and A.~Courville, ``Deep learning.(2016),'' {\em Book
+  in preparation for MIT Press. URL: http://www. deeplearningbook. org}, 2016.
+
+\bibitem{collobert-natural}
+R.~Collobert, J.~Weston, L.~Bottou, M.~Karlen, K.~Kavukcuoglu, and P.~Kuksa,
+  ``Natural language processing (almost) from scratch,'' {\em Journal of
+  Machine Learning Research}, vol.~12, no.~Aug, pp.~2493--2537, 2011.
+
+\bibitem{mandic-recurrent}
+D.~P. Mandic, J.~A. Chambers, {\em et~al.}, {\em Recurrent neural networks for
+  prediction: learning algorithms, architectures and stability}.
+\newblock Wiley Online Library, 2001.
+
+\bibitem{hochreiter-long}
+S.~Hochreiter and J.~Schmidhuber, ``Long short-term memory,'' {\em Neural
+  computation}, vol.~9, no.~8, pp.~1735--1780, 1997.
+
+\bibitem{schuster-bidirectional}
+M.~Schuster and K.~K. Paliwal, ``Bidirectional recurrent neural networks,''
+  {\em IEEE Transactions on Signal Processing}, vol.~45, no.~11,
+  pp.~2673--2681, 1997.
+
+\bibitem{ramos-using}
+J.~Ramos {\em et~al.}, ``Using tf-idf to determine word relevance in document
+  queries,'' in {\em Proceedings of the first instructional conference on
+  machine learning}, vol.~242, pp.~133--142, 2003.
+
+\bibitem{chopra-learning}
+S.~Chopra, R.~Hadsell, and Y.~LeCun, ``Learning a similarity metric
+  discriminatively, with application to face verification,'' in {\em Computer
+  Vision and Pattern Recognition, 2005. CVPR 2005. IEEE Computer Society
+  Conference on}, vol.~1, pp.~539--546, IEEE, 2005.
+
+\bibitem{benchmark-datasets}
+``Benchmark datasets for entity resolution.'' \url{https:
+  //dbs.uni-leipzig.de/en/research/projects/object
+  matching/fever/benchmark_datasets_for_entity_resolution}.
+\newblock Accessed: 2018-02-11.
+
+\end{thebibliography}
