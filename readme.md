@@ -33,11 +33,11 @@ While DeepER performs well on many benchmark datasets, its behavior under a vari
 
 The rest of this report is organized as follows:
 
-- In Section 2, we provide a brief overview of key concepts underpinning DeepER's architecture as well as distance metric learning.
-- In Section 3, we discuss in greater detail the extensions made to DeepER.
-- In Section 4, we describe the experimental setup for testing the DeepER extensions.
-- In Section 5, we present and analyze the results of said experiments.
-- In Section 6, we conclude with some final remarks.
+- In [Section 2](#background), we provide a brief overview of key concepts underpinning DeepER's architecture as well as distance metric learning.
+- In [Section 3](#extending-deeper), we discuss in greater detail the extensions made to DeepER.
+- In [Section 4](#experimental-setup), we describe the experimental setup for testing the DeepER extensions.
+- In [Section 5](#experimental-results), we present and analyze the results of said experiments.
+- In [Section 6](#concluding-remarks), we conclude with some final remarks.
 
 
 ## Background
