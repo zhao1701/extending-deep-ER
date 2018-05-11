@@ -1,0 +1,41 @@
+\documentclass{article}
+\usepackage{url}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{parskip}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\begin{document}
+
+\begin{algorithm}
+	\caption{DeepER - Identifying Matches and Non-matches}
+	\begin{algorithmic}[1]
+		\REQUIRE A dataset $\mathcal{D}$ consisting of $n$ pairs of tuples, $(t_{1}^{(i)}, t_{2}^{(i)})$ for $ t = 1, 2, ..., n$
+		\ENSURE Return a label vector $y$ where $y[i] = \begin{cases} 1, \text{   if } (t_{1}^{(i)}, t_{2}^{(i)}) \text{ match} \\ 0, \text{   otherwise} \end{cases}$
+		\FOR{each tuple $t \in \mathcal{D}$}
+			\FOR{each attribute $A_j$ of $t$}
+				\STATE Pre-process and tokenize $t[A_j]$
+				\STATE Convert each token $w_l \in t[A_j]$ into a word embedding $e_l \in \mathbb{R}^k$ using pre-trained GloVe embeddings
+				\STATE $t[v_j] = $ composed attribute embedding obtained from either averaging or applying an LSTM on all $e_l$ 
+			\ENDFOR
+		\ENDFOR
+		\FOR{each tuple pair $(t_{1}^{(i)}, t_{2}^{(i)}) \in \mathcal{D}$}
+			\FOR{each attribute $j$}
+				\STATE $s_j = $ similarity between $t_1[v_j]$ and $t_2[v_j]$. Can be scalar or vector depending on compositional method used to generate $v_j$
+			\ENDFOR
+			\STATE concatenate all $s_j$ into single distributed similarity vector $s$
+			\STATE Use densely connected trained neural network $\mathcal{N}$ to classify $s$ as $\mathcal{N}(s) = \begin{cases} 1, \text{   if } (t_{1}, t_{2}) \text{ match} \\ 0, \text{   otherwise} \end{cases}$
+			\STATE $y[i] = \mathcal{N}(s)$
+		\ENDFOR
+		\RETURN $y$
+	\end{algorithmic}
+\end{algorithm}
+
+\end{document}
