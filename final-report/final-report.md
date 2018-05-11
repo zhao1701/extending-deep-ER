@@ -1,5 +1,5 @@
-#Extending DeepER: A Closer Examination of Deep Learning for Entity Resolution
-#### by Derek Zhao
+# Extending DeepER: A Closer Examination of Deep Learning for Entity Resolution
+##### by Derek Zhao
 
 ## Abstract
 
@@ -11,35 +11,34 @@ When processing structured data from disparate sources into a single unified sou
 
 #### Machine Learning for Entity Resolution
 
-The decades of attention invested in addressing the entity resolution task have culminated in a variety of machine-learning-based approaches where entity resolution is posed as a binary classification problem \cite{elmagarmid-duplicate-record-detection, fellegi-theory, naumann-introduction, bilenko-adaptive}. Let $A$ and $B$ be two relational tables sharing the same $d$-attribute schema, $a \in A$ be a tuple from the first table, $b \in B$ be a tuple from the second table, and $s(a, b) \in \mathbb{R}^d$ be a \textbf{similarity vector}, a vector where each component is a similarity metric calculated from a pair of values, one form $a$ and one from $b$, both sharing the same attribute. Then given $A$, $B$, and a list of matching records, one can construct $|A| \times |B|$ similarity vectors with corresponding labels, $0$ for a non-match and $1$ for a match \cite{fellegi-theory}. These similarity vectors and labels can then serve as training data for a supervised machine learning algorithm, with random forests, support vector machines, and voting ensembles among the most commonly used.
+The decades of attention invested in addressing the entity resolution task have culminated in a variety of machine-learning-based approaches where entity resolution is posed as a binary classification problem [1, 2, 3, 4]. Let _A_ and _B_ be two relational tables sharing the same _d_-attribute schema, _a ∈ A_ be a tuple from the first table, _b ∈ B_ be a tuple from the second table, and _s(a, b) ∈ ℝ<sup>d<sup/>_ be a **similarity vector**, a vector where each component is a similarity metric calculated from a pair of values, one form _a_ and one from _b_, both sharing the same attribute. Then given _A_, _B_, and a list of matching records, one can construct _|A| x |B|_ similarity vectors with corresponding labels, _0_ for a non-match and _1_ for a match [2]. These similarity vectors and labels can then serve as training data for a supervised machine learning algorithm, with random forests, support vector machines, and voting ensembles among the most commonly used.
 
-One of the main challenges with such an approach is that, for text-based attributes, it is often not immediately clear which similarity metrics are most appropriate. Just to compare two strings, one has access to numerous character-based similarity measures (edit distance, affine gap distance, Smith-Waterman distance, Jaro distance metric, q-gram distance), token-based similarity measures (atomic strings, WHIRL, Jaccard similarity, q-grams with TFIDF), and phonetic similarity measures (Soundex, Oxford name compression, metaphone) \cite{elmagarmid-duplicate-record-detection}. Selecting the most appropriate similarity metric for each attribute requires expert domain knowledge and results in highly specialized entity resolution systems designed to only perform well on very specific datasets \cite{ebraheem-deep-er}.
+One of the main challenges with such an approach is that, for text-based attributes, it is often not immediately clear which similarity metrics are most appropriate. Just to compare two strings, one has access to numerous character-based similarity measures (edit distance, affine gap distance, Smith-Waterman distance, Jaro distance metric, q-gram distance), token-based similarity measures (atomic strings, WHIRL, Jaccard similarity, q-grams with TFIDF), and phonetic similarity measures (Soundex, Oxford name compression, metaphone) [1]. Selecting the most appropriate similarity metric for each attribute requires expert domain knowledge and results in highly specialized entity resolution systems designed to only perform well on very specific datasets [5].
 
 #### DeepER for Entity Resolution
 
-To address these issues, Ebraheem et al. built DeepER \cite{ebraheem-deep-er}, a more generalizable entity resolution system designed to require far less domain-specific expertise. Specifically, DeepER leverages a recent advance in the NLP community: \textbf{word vector embeddings} (also known as distributed representations), where a word can be expressed as a real-valued vector of arbitrary dimensionality that captures the semantic meaning of the word \cite{mikolov-distributed}. For example, two words (or more generally, tokens) that are semantically similar such as \textit{Republican} and \textit{GOP} are also represented by vector embeddings with high cosine similarity.
+To address these issues, Ebraheem et al. built DeepER [5], a more generalizable entity resolution system designed to require far less domain-specific expertise. Specifically, DeepER leverages a recent advance in the NLP community: **word vector embeddings** (also known as distributed representations), where a word can be expressed as a real-valued vector of arbitrary dimensionality that captures the semantic meaning of the word [6]. For example, two words (or more generally, tokens) that are semantically similar such as _Republican_ and _GOP_ are also represented by vector embeddings with high cosine similarity.
 
-This notion of encoding the semantic meaning of words as vectors can be extended to sentences and entire documents. In the case of DeepER, recurrent neural networks are used to combine word embeddings into attribute embeddings, which can then be used to calculate similarities between the attributes of two tuples, as required for similarity vectors \cite{ebraheem-deep-er}.
+This notion of encoding the semantic meaning of words as vectors can be extended to sentences and entire documents. In the case of DeepER, recurrent neural networks are used to combine word embeddings into attribute embeddings, which can then be used to calculate similarities between the attributes of two tuples, as required for similarity vectors [5].
 
 #### Project Goals
 
 While DeepER performs well on many benchmark datasets, its behavior under a variety of conditions is not fully documented nor is its functionality complete. This project serves three different but related goals:
-\begin{enumerate}
-\item{\textbf{Verify and explore}:} We attempt to reproduce and verify the published performance results of DeepER on benchmark entity resolution datasets. Furthermore, we examine the robustness of the system to different text preprocessing methods.
-\item{\textbf{Extend functionality}:} DeepER is currently only capable of handling text-based attributes. While it is theoretically possible to generate embeddings for numerical values, it is highly impractical. Furthermore, it is not uncommon for attributes to contain null values, which DeepER interprets as just another token. Thus, two natural extensions to DeepER involve providing support for numerical attributes and missing values. We also extend DeepER so that it can support multiple similarity metrics between two attribute values as well as multiple methods for composing word embeddings into attribute embeddings.
-\item{\textbf{Evaluate distance metric learning}:} In \textbf{distance metric learning}, a model receives as input two objects and outputs a similarity score \cite{yang-distance}. This is a popular and effective technique in the computer vision community, particularly for facial recognition \cite{schroff-facenet}, and we evaluate its efficacy in the context of entity resolution by exchanging images for tuples. We build and test a Siamese neural network model that directly learns the similarity between two records without the need to generate an intermediate distributed similarity vector \cite{mueller-siamese}.
-\end{enumerate}
+
+1. **Verify and explore**: We attempt to reproduce and verify the published performance results of DeepER on benchmark entity resolution datasets. Furthermore, we examine the robustness of the system to different text preprocessing methods.
+2. **Extend functionality**: DeepER is currently only capable of handling text-based attributes. While it is theoretically possible to generate embeddings for numerical values, it is highly impractical. Furthermore, it is not uncommon for attributes to contain null values, which DeepER interprets as just another token. Thus, two natural extensions to DeepER involve providing support for numerical attributes and missing values. We also extend DeepER so that it can support multiple similarity metrics between two attribute values as well as multiple methods for composing word embeddings into attribute embeddings.
+3. **Evaluate distance metric learning**: In **distance metric learning**, a model receives as input two objects and outputs a similarity score [7]. This is a popular and effective technique in the computer vision community, particularly for facial recognition [8], and we evaluate its efficacy in the context of entity resolution by exchanging images for tuples. We build and test a Siamese neural network model that directly learns the similarity between two records without the need to generate an intermediate distributed similarity vector [9].
 
 #### Outline
 
 The rest of this report is organized as follows:
-\begin{itemize}
-\item{In Section 2, we provide a brief overview of key concepts underpinning DeepER's architecture as well as distance metric learning.} 
-\item{In Section 3, we discuss in greater detail the extensions made to DeepER.}
-\item{In Section 4, we describe the experimental setup for testing the DeepER extensions.}
-\item{In Section 5, we present and analyze the results of said experiments.}
-\item{In Section 6, we conclude with some final remarks.} 
-\end{itemize}
+
+- In Section 2, we provide a brief overview of key concepts underpinning DeepER's architecture as well as distance metric learning.
+- In Section 3, we discuss in greater detail the extensions made to DeepER.
+- In Section 4, we describe the experimental setup for testing the DeepER extensions.
+- In Section 5, we present and analyze the results of said experiments.
+- In Section 6, we conclude with some final remarks.}
+
 
 ## Background
 
@@ -47,17 +46,14 @@ In this section, we briefly overview some fundamental concepts as well as the De
 
 #### Word Embeddings
 
-A word embedding procedure maps tokens into a latent vector space such that tokens with similar semantic meanings are closer together in the latent space than words with different semantic meanings \cite{mikolov-distributed}. Put differently, two semantically similar tokens such as \textit{computer} and \textit{PC} should have a high cosine similarity in the latent space. While there exists many different methods for creating such embeddings, with matrix factorization \cite{pennington-glove}, skip-gram, and continuous-bag-of-words \cite{mikolov-distributed} among the most popular, they all share the fundamental assumption that a word's meaning can be defined by its context, the neighborhood of words that appear around it.
+A word embedding procedure maps tokens into a latent vector space such that tokens with similar semantic meanings are closer together in the latent space than words with different semantic meanings [6]. Put differently, two semantically similar tokens such as _computer_ and _PC_ should have a high cosine similarity in the latent space. While there exists many different methods for creating such embeddings, with matrix factorization [10], skip-gram, and continuous-bag-of-words [6] among the most popular, they all share the fundamental assumption that a word's meaning can be defined by its context, the neighborhood of words that appear around it.
 
-For example, because the words \textit{senate} and \textit{congress} are more frequently in the vicinity of neighboring words like \textit{government}, \textit{Washington}, and \textit{political} than a word like \textit{fashion}, one could reasonably expect \textit{senate} and \textit{congress} to have more similar contexts than \textit{senate} and \textit{fashion}. In fact, given a corpus with a vocabulary of size $v$, one could naively embed a word $w$ as a $v$-dimensional co-occurrence vector where each element counts the frequency with which a particular word appears in the neighborhood of $w$ throughout the corpus. Of course, such a method is impractical because $v$ is often much too large. 
+For example, because the words _senate_ and _congress_ are more frequently in the vicinity of neighboring words like _government_, _Washington_, and _political_ than a word like _fashion_, one could reasonably expect _senate_ and _congress_ to have more similar contexts than _senate_ and _fashion_. In fact, given a corpus with a vocabulary of size _v_, one could naively embed a word _w_ as a _v_-dimensional co-occurrence vector where each element counts the frequency with which a particular word appears in the neighborhood of _w_ throughout the corpus. Of course, such a method is impractical because _v_ is often much too large. 
 
-One particular algorithm for embedding words into a latent space of more manageable dimensionality is GloVe \cite{pennington-glove} (short for \textit{global vectors}), a matrix factorization technique. Given a corpus of documents, one can construct a co-occurrence matrix $X \in \mathbb{R}^{v \times v}$ such that $X_{ij}$ is the number of times word $w_j$ appears within an arbitrary number of words $c$ of $w_i$ throughout the corpus. At the simplest level, GloVe factorizes $\ln(X)$ into $W \in \mathbb{R}^{v \times k}$ and $H \in \mathbb{R}^{k \times v}$, which row vector $W_{i:}$ corresponding to a $k$-dimensional embedding of word $w_i$. The entire matrix $W$ can be used as the embedding layer of a neural network.
+One particular algorithm for embedding words into a latent space of more manageable dimensionality is GloVe [10] (short for _global vectors_), a matrix factorization technique. Given a corpus of documents, one can construct a co-occurrence matrix _X ∈ ℝ<sup>v x v<sup/>_ such that _X<sub>ij<sub/>_ is the number of times word _w<sub>j<sub/>_ appears within an arbitrary number of words _c_ of _w<sub>i<sub/>_ throughout the corpus. At the simplest level, GloVe factorizes ln(_X_) into _W ∈ ℝ<sup>{v x k}<sup/>_ and _H ∈ ℝ<sup>k x v<sup/>_, with row vector _W<sub>i:<sub/>_ corresponding to a _k_-dimensional embedding of word _w<sub>i<sub/>_. The entire matrix _W_ can be used as the embedding layer of a neural network.
 
-\begin{figure}[h!]
-        \includegraphics*[scale=0.45]{../imgs/word-embeddings.png}
-        \caption{\textbf{Word embeddings}}
-        \label{fig:word-embeddings}
-\end{figure}
+<img src="../imgs/word-embeddings.png" style="width:500;height:300px;">
+<caption><center> **Figure 1**: Word embeddings </center></caption>
 
 For DeepER, Ebraheem et al. use a set of pre-trained 300-dimensional word embeddings generated from a Common Crawl corpus of 840 billion tokens \cite{ebraheem-deep-er}.
 
@@ -407,39 +403,39 @@ To conclude, we believe deep learning can be a powerful tool for entity resoluti
 
 ## References
 
-[^1]: A. K. Elmagarmid, P. G. Ipeirotis, and V. S. Verykios, “Duplicate record detection: A sur- vey,” _IEEE Transactions on knowledge and data engineering_, vol. 19, no. 1, pp. 1–16, 2007.
+1. A. K. Elmagarmid, P. G. Ipeirotis, and V. S. Verykios, “Duplicate record detection: A sur- vey,” _IEEE Transactions on knowledge and data engineering_, vol. 19, no. 1, pp. 1–16, 2007.
 
-[^2]: I. P. Fellegi and A. B. Sunter, “A theory for record linkage,” _Journal of the American Statistical Association_, vol. 64, no. 328, pp. 1183–1210, 1969.
+2. I. P. Fellegi and A. B. Sunter, “A theory for record linkage,” _Journal of the American Statistical Association_, vol. 64, no. 328, pp. 1183–1210, 1969.
 
-[^3]: F. Naumann and M. Herschel, “An introduction to duplicate detection,” _Synthesis Lectures on Data Management_, vol. 2, no. 1, pp. 1–87, 2010.
+3. F. Naumann and M. Herschel, “An introduction to duplicate detection,” _Synthesis Lectures on Data Management_, vol. 2, no. 1, pp. 1–87, 2010.
 
-[^4]: M. Bilenko and R. J. Mooney, “Adaptive duplicate detection using learnable string similarity measures,” in _Proceedings of the Ninth ACM SIGKDD International Conference on Knowledge Discovery and Data Mining_, KDD ’03, (New York, NY, USA), pp. 39–48, ACM, 2003.
+4. M. Bilenko and R. J. Mooney, “Adaptive duplicate detection using learnable string similarity measures,” in _Proceedings of the Ninth ACM SIGKDD International Conference on Knowledge Discovery and Data Mining_, KDD ’03, (New York, NY, USA), pp. 39–48, ACM, 2003.
 
-[^5]: M. Ebraheem, S. Thirumuruganathan, S. Joty, M. Ouzzani, and N. Tang, “Deeper–deep entity resolution,” _arXiv preprint arXiv:1710.00597_, 2017.
+5. M. Ebraheem, S. Thirumuruganathan, S. Joty, M. Ouzzani, and N. Tang, “Deeper–deep entity resolution,” _arXiv preprint arXiv:1710.00597_, 2017.
 
-[^6]: T. Mikolov, I. Sutskever, K. Chen, G. S. Cor- rado, and J. Dean, “Distributed representations of words and phrases and their compositional- ity,” in _Advances in Neural Information Processing Systems 26_ (C. J. C. Burges, L. Bottou, M. Welling, Z. Ghahramani, and K. Q. Wein- berger, eds.), pp. 3111–3119, Curran Associates, Inc., 2013.
+6. T. Mikolov, I. Sutskever, K. Chen, G. S. Cor- rado, and J. Dean, “Distributed representations of words and phrases and their compositional- ity,” in _Advances in Neural Information Processing Systems 26_ (C. J. C. Burges, L. Bottou, M. Welling, Z. Ghahramani, and K. Q. Wein- berger, eds.), pp. 3111–3119, Curran Associates, Inc., 2013.
 
-[^7]: L. Yang and R. Jin, “Distance metric learning: A comprehensive survey,” _Michigan State Universiy_, vol. 2, no. 2, 2006.
+7. L. Yang and R. Jin, “Distance metric learning: A comprehensive survey,” _Michigan State Universiy_, vol. 2, no. 2, 2006.
 
-[^8]: F. Schroff, D. Kalenichenko, and J. Philbin, “Facenet: A unified embedding for face recognition and clustering,” in _Proceedings of the IEEE conference on computer vision and pattern recognition_, pp. 815–823, 2015.
+8. F. Schroff, D. Kalenichenko, and J. Philbin, “Facenet: A unified embedding for face recognition and clustering,” in _Proceedings of the IEEE conference on computer vision and pattern recognition_, pp. 815–823, 2015.
 
-[^9]: J. Mueller and A. Thyagarajan, “Siamese recurrent architectures for learning sentence similarity.,” in _AAAI_, pp. 2786–2792, 2016.
+9. J. Mueller and A. Thyagarajan, “Siamese recurrent architectures for learning sentence similarity.,” in _AAAI_, pp. 2786–2792, 2016.
 
-[^10]: J. Pennington, R. Socher, and C. D. Manning, “Glove: Global vectors for word representation,”
+10. J. Pennington, R. Socher, and C. D. Manning, “Glove: Global vectors for word representation,”
 in _Empirical Methods in Natural Language Processing (EMNLP)_, pp. 1532–1543, 2014.
 
-[^11]: I. Goodfellow, Y. Bengio, and A. Courville, “Deep learning.(2016),” _Book in preparation for MIT Press_. URL: http://www.deeplearningbook.org, 2016.
+11. I. Goodfellow, Y. Bengio, and A. Courville, “Deep learning.(2016),” _Book in preparation for MIT Press_. URL: http://www.deeplearningbook.org, 2016.
 
-[^12]: R. Collobert, J. Weston, L. Bottou, M. Karlen, K. Kavukcuoglu, and P. Kuksa, “Natural language processing (almost) from scratch,” _Journal of Machine Learning Research_, vol. 12, no. Aug, pp. 2493–2537, 2011.
+12. R. Collobert, J. Weston, L. Bottou, M. Karlen, K. Kavukcuoglu, and P. Kuksa, “Natural language processing (almost) from scratch,” _Journal of Machine Learning Research_, vol. 12, no. Aug, pp. 2493–2537, 2011.
 
-[^13]: D. P. Mandic, J. A. Chambers, _et al., Recurrent neural networks for prediction: learning algorithms, architectures and stability_. Wiley Online Library, 2001.
+13. D. P. Mandic, J. A. Chambers, _et al., Recurrent neural networks for prediction: learning algorithms, architectures and stability_. Wiley Online Library, 2001.
 
-[^14]: S. Hochreiter and J. Schmidhuber, “Long shortterm memory,” _Neural computation_, vol. 9, no. 8, pp. 1735–1780, 1997.
+14. S. Hochreiter and J. Schmidhuber, “Long shortterm memory,” _Neural computation_, vol. 9, no. 8, pp. 1735–1780, 1997.
 
-[^15]: M. Schuster and K. K. Paliwal, “Bidirectional recurrent neural networks,” _IEEE Transactions on Signal Processing_, vol. 45, no. 11, pp. 2673– 2681, 1997.
+15. M. Schuster and K. K. Paliwal, “Bidirectional recurrent neural networks,” _IEEE Transactions on Signal Processing_, vol. 45, no. 11, pp. 2673– 2681, 1997.
 
-[^16]: J. Ramos et al., “Using tf-idf to determine word relevance in document queries,” in _Proceedings of the first instructional conference on machine learning_, vol. 242, pp. 133–142, 2003.
+16. J. Ramos et al., “Using tf-idf to determine word relevance in document queries,” in _Proceedings of the first instructional conference on machine learning_, vol. 242, pp. 133–142, 2003.
 
-[^17]: S. Chopra, R. Hadsell, and Y. LeCun, “Learning a similarity metric discriminatively, with application to face verification,” in Computer Vision and Pattern Recognition, 2005. CVPR 2005. _IEEE Computer Society Conference on_, vol. 1, pp. 539–546, IEEE, 2005.
+17. S. Chopra, R. Hadsell, and Y. LeCun, “Learning a similarity metric discriminatively, with application to face verification,” in Computer Vision and Pattern Recognition, 2005. CVPR 2005. _IEEE Computer Society Conference on_, vol. 1, pp. 539–546, IEEE, 2005.
 
-[^18]: “Benchmark datasets for entity resolution.” https://dbs.uni-leipzig.de/en/research/projects/objectmatching/fever/benchmark_datasets_for_entity_resolution. Accessed: 2018-02-11.
+18. “Benchmark datasets for entity resolution.” https://dbs.uni-leipzig.de/en/research/projects/objectmatching/fever/benchmark_datasets_for_entity_resolution. Accessed: 2018-02-11.
