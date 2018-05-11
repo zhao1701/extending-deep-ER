@@ -53,7 +53,7 @@ For example, because the words _senate_ and _congress_ are more frequently in th
 One particular algorithm for embedding words into a latent space of more manageable dimensionality is GloVe [10] (short for _global vectors_), a matrix factorization technique. Given a corpus of documents, one can construct a co-occurrence matrix _X ∈ ℝ<sup>v x v<sup/>_ such that _X<sub>ij<sub/>_ is the number of times word _w<sub>j<sub/>_ appears within an arbitrary number of words _c_ of _w<sub>i<sub/>_ throughout the corpus. At the simplest level, GloVe factorizes ln(_X_) into _W ∈ ℝ<sup>{v x k}<sup/>_ and _H ∈ ℝ<sup>k x v<sup/>_, with row vector _W<sub>i:<sub/>_ corresponding to a _k_-dimensional embedding of word _w<sub>i<sub/>_. The entire matrix _W_ can be used as the embedding layer of a neural network.
 
 <img src="../imgs/word-embeddings.png" style="width:500;height:300px;">
-<caption><center> **Figure 1**: Word embeddings </center></caption>
+<center> Figure 1: Word embeddings </center>
 
 For DeepER, Ebraheem et al. use a set of pre-trained 300-dimensional word embeddings generated from a Common Crawl corpus of 840 billion tokens \cite{ebraheem-deep-er}.
 
