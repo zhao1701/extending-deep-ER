@@ -37,7 +37,7 @@ The rest of this report is organized as follows:
 - In Section 3, we discuss in greater detail the extensions made to DeepER.
 - In Section 4, we describe the experimental setup for testing the DeepER extensions.
 - In Section 5, we present and analyze the results of said experiments.
-- In Section 6, we conclude with some final remarks.}
+- In Section 6, we conclude with some final remarks.
 
 
 ## Background
@@ -50,7 +50,7 @@ A word embedding procedure maps tokens into a latent vector space such that toke
 
 For example, because the words _senate_ and _congress_ are more frequently in the vicinity of neighboring words like _government_, _Washington_, and _political_ than a word like _fashion_, one could reasonably expect _senate_ and _congress_ to have more similar contexts than _senate_ and _fashion_. In fact, given a corpus with a vocabulary of size _v_, one could naively embed a word _w_ as a _v_-dimensional co-occurrence vector where each element counts the frequency with which a particular word appears in the neighborhood of _w_ throughout the corpus. Of course, such a method is impractical because _v_ is often much too large. 
 
-One particular algorithm for embedding words into a latent space of more manageable dimensionality is GloVe [10] (short for _global vectors_), a matrix factorization technique. Given a corpus of documents, one can construct a co-occurrence matrix _X ∈ ℝ<sup>v x v<sup/>_ such that _X<sub>ij<sub/>_ is the number of times word _w<sub>j<sub/>_ appears within an arbitrary number of words _c_ of _w<sub>i<sub/>_ throughout the corpus. At the simplest level, GloVe factorizes ln(_X_) into _W ∈ ℝ<sup>{v x k}<sup/>_ and _H ∈ ℝ<sup>k x v<sup/>_, with row vector _W<sub>i:<sub/>_ corresponding to a _k_-dimensional embedding of word _w<sub>i<sub/>_. The entire matrix _W_ can be used as the embedding layer of a neural network.
+One particular algorithm for embedding words into a latent space of more manageable dimensionality is GloVe [10] (short for _global vectors_), a matrix factorization technique. Given a corpus of documents, one can construct a co-occurrence matrix _X ∈ ℝ<sup>v x v<sup/>_ such that _X<sub>ij<sub/>_ is the number of times word _w<sub>j<sub/>_ appears within an arbitrary number of words _c_ of _w<sub>i<sub/>_ throughout the corpus. At the simplest level, GloVe factorizes ln(_X_) into _W ∈ ℝ<sup>v x k<sup/>_ and _H ∈ ℝ<sup>k x v<sup/>_, with row vector _W<sub>i:<sub/>_ corresponding to a _k_-dimensional embedding of word _w<sub>i<sub/>_. The entire matrix _W_ can be used as the embedding layer of a neural network.
 
 <p align='center'> <img src="imgs/word-embeddings.png" height='300px'> </p>
 <p align='center'> <b>Figure 1</b>: Word embeddings </p>
@@ -67,7 +67,7 @@ Neural networks are trained via gradient descent; the error of the output vector
 
 A recurrent neural network is one designed to model sequential dependencies in the data. Given a sequence of input vectors _x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>T</sub>_, an RNN expects as input not just _x<sub>t</sub>_, but also its own output from the previous time step _o<sub>t-1</sub>_ that was itself calculated from _x<sub>t-1</sub>_ and _o<sub>t-2</sub>_. In this way, an RNN's output accounts not only for the current input vector in the sequence, but all prior input vectors in the sequence [13].
 
-However, one crucial shortcoming of traditional RNN's is that they are unable to model long-term dependencies in sequential data (i.e. they are only able to look a few steps back at most). Long Short Term Memory networks [14] were designed to address the long-term dependency problem by adding memory cells to the network that can, if necessary, carry information through time steps without any transformation or attenuation. The details of this memory mechanism is beyond the scope of this report, but LSTM's have been immensely successful in domains such as machine translation, text classification, and sentiment analysis. A notable extension to the LSTM is the bi-directional LSTM, or bi-LSTM, where a second LSTM is applied to the same sequence of data but starting from the end and moving towards the beginning, providing a different view of the data \cite{schuster-bidirectional}. The output of a bi-LSTM is simply a concatenation of the outputs of its two individual LSTM's.
+However, one crucial shortcoming of traditional RNN's is that they are unable to model long-term dependencies in sequential data (i.e. they are only able to look a few steps back at most). Long Short Term Memory networks [14] were designed to address the long-term dependency problem by adding memory cells to the network that can, if necessary, carry information through time steps without any transformation or attenuation. The details of this memory mechanism is beyond the scope of this report, but LSTM's have been immensely successful in domains such as machine translation, text classification, and sentiment analysis. A notable extension to the LSTM is the bi-directional LSTM, or bi-LSTM, where a second LSTM is applied to the same sequence of data but starting from the end and moving towards the beginning, providing a different view of the data [15]. The output of a bi-LSTM is simply a concatenation of the outputs of its two individual LSTM's.
 
 <p align='center'><img src="imgs/word-embeddings-lstm.png" height='400px'></p>
 <p align='center'> <b>Figure 2</b>: LSTM </p>
@@ -128,17 +128,17 @@ Let _w_ be a token. Then we calculate the inverse document frequency of _w_ to b
 
 <p align='center'><img src="imgs/equation-1.png" height='100px'></p>
 
-where _df(w)_ is the number of tuples in which token $w$ is present in any attribute, and $\alpha$ is a smoothing hyperparameter that evens out the magnitude of the downweighting.
+where _df(w)_ is the number of tuples in which token _w_ is present in any attribute, and _α_ is a smoothing hyperparameter that evens out the magnitude of the downweighting.
 
-For $l = 1, 2, ..., L$, let $w_l \in A$ be a token of attribute $A$, and $v_l$ be the word embedding of $w_l$. Then $v$, the attribute embedding of $A$ is: 
+For _l = 1, 2, ..., L_, let _w<sub>l</sub> ∈ A_ be a token of attribute _A_, and _v<sub>l</sub>_ be the word embedding of _w<sub>l</sub>_. Then _v_, the attribute embedding of _A_ is: 
 
 <p align='center'><img src="imgs/equation-2.png" height='100px'></p>
 
-Given an attribute, we calculate $idf$ weights for each token present, then normalize the weights so they all sum to $1$. The embedding for the attribute is essentially a weighted average of word embeddings with inverse document frequencies as coefficients.
+Given an attribute, we calculate _idf_ weights for each token present, then normalize the weights so they all sum to _1_. The embedding for the attribute is essentially a weighted average of word embeddings with inverse document frequencies as coefficients.
 
 ###### Compound Compositions
 
-As previously mentioned, depending on the datasets involved, attribute embeddings derived from an averaging composition may perform better than those from an LSTM composition, and vice versa \cite{ebraheem-deep-er}. Those using DeepER would need to perform tests on their own data to determine which compositional approach is optimal. A natural next step for DeepER is to support both composition methods simultaneously to obviate the need to choose between averaging and LSTM's.
+As previously mentioned, depending on the datasets involved, attribute embeddings derived from an averaging composition may perform better than those from an LSTM composition, and vice versa [5]. Those using DeepER would need to perform tests on their own data to determine which compositional approach is optimal. A natural next step for DeepER is to support both composition methods simultaneously to obviate the need to choose between averaging and LSTM's.
 
 That is, given a pair of attributes, we can generate an average-based embedding for both as well as an LSTM-based embedding for both, a compound composition resulting in two similarity measures calculated per attribute pair. This can be further extended to include IDF-based embeddings, which would result in 3 similarity measures per attribute pair.
 
@@ -192,7 +192,7 @@ We conducted extensive experiments on 3 datasets that Ebraheem et al. used to ev
 
 The Amazon-Google dataset consists of 1,363 tuples from Amazon and 3,226 tuples from Google, each a record of some product in their catalog or inventory. Between the two tables, there are 1,300 matches.
 
-Each tuple consists of 5 attributes: _id_, _url_, _manufacturer_, _product name_, and _price_. When comparing pairs of tuples for matches, _id} and _url_ are not considered as they do not contain useful information. We make one other significant change to the schema: the _manufacturer_ attribute from the Google table very frequently contains null values because the manufacturer name appears in the _product name_ attribute. This can be problematic for a DeepER architecture, so we combine _manufacturer_ and _product name_ into a single attribute with manufacturer name appended to the front of product name.
+Each tuple consists of 5 attributes: _id_, _url_, _manufacturer_, _product name_, and _price_. When comparing pairs of tuples for matches, _id_ and _url_ are not considered as they do not contain useful information. We make one other significant change to the schema: the _manufacturer_ attribute from the Google table very frequently contains null values because the manufacturer name appears in the _product name_ attribute. This can be problematic for a DeepER architecture, so we combine _manufacturer_ and _product name_ into a single attribute with manufacturer name appended to the front of product name.
 
 ###### Amazon-Walmart
 
@@ -210,7 +210,7 @@ Each tuple consists of 4 attributes: _authors_, _title_, _venue_, and _year_. No
 
 All text attributes must be tokenized in order to be converted to sequences of word embeddings. Ebraheem et al. [5] only mention that they apply preprocessing and tokenization to text attributes but do not provide any details. Thus, we are left to our own intuition about how to best preprocess the text. To assess the robustness of DeepER to different preprocessing approaches, we evaluate DeepER with two tokenization schemes.
 
-- **Standard**: All tokens are converted to lowercase. All punctuation is removed. All tokens consisting of a single character are removed. All tokens appearing in more than 10% of all tuples (regardless of source) are removed. Such a scheme has the benefit of greatly reducing the number of unique tokens in the dataset but semantic distinctions such as those between _apple} (the fruit) and _Apple} (the manufacturer) may be lost during conversion to word embeddings.
+- **Standard**: All tokens are converted to lowercase. All punctuation is removed. All tokens consisting of a single character are removed. All tokens appearing in more than 10% of all tuples (regardless of source) are removed. Such a scheme has the benefit of greatly reducing the number of unique tokens in the dataset but semantic distinctions such as those between _apple_ (the fruit) and _Apple_ (the manufacturer) may be lost during conversion to word embeddings.
 - **Full**: _Full_ refers to the vocabulary, or set of all unique tokens, created after the tokenization process. This option attempts to minimize the alterations to the original text, preserving capitalization and punctuation, and splitting only on spaces. While such an approach might be able to preserve finer gradations in semantic meaning, it does risk creating too large a vocabulary on which a model can easily overfit.
 
 Tokens are converted to 300-dimensional GloVe word embeddings trained from the Common Crawl corpus [10], which features a vocabulary of 2.2 million words. For any token that is out-of-vocabulary, instead of ignoring it or mapping it to a vector of _0_'s, we map it to its own embedding, sampled from a standard 300-dimensional Gaussian distribution. The intuition for mapping unknown tokens to their own randomly initialized vectors is that when the word embedding layer of a neural network is allowed to be trainable, these initially random embeddings can be trained to express useful information. However, to prevent these random embeddings from adding excessive noise when creating average-based attribute embeddings, they are scaled down (element-wise division) by 300.
@@ -221,7 +221,7 @@ Finally, Ebraheem et al. [5] do not discuss how they handle missing values in th
 
 For each dataset, past benchmark tests have used models trained and evaluated on tuple pairs with a match to non-match ratio of _1:100_. Because the number of non-matches between two tables far outweighs the number of matches, we use negative sampling to generate pairs of non-matching tuples. Once the requisite number of non-matching tuple pairs has been created, it is shuffled with the matching tuple pairs and split into a training, validation, and test set, with proportions _0.8_, _0.1_, and _0.1_, respectively.
 
-It should be noted that this diverges quite significantly from how Ebraheem et al. test DeepER \cite{ebraheem-deep-er}. Instead of creating a validation set that preserves the _1:100_ positive-negative ratio, they perform blocking for all tuples in the dataset, run a trained classifier over all tuple pairs within each block, and return all positive tuple pairs. Whether those positive tuple pairs that were returned include matches originally used as training data, and whether matches originally used as training data are factored into the evaluation metric is left unspecified.
+It should be noted that this diverges quite significantly from how Ebraheem et al. test DeepER [5]. Instead of creating a validation set that preserves the _1:100_ positive-negative ratio, they perform blocking for all tuples in the dataset, run a trained classifier over all tuple pairs within each block, and return all positive tuple pairs. Whether those positive tuple pairs that were returned include matches originally used as training data, and whether matches originally used as training data are factored into the evaluation metric is left unspecified.
 
 We choose to omit blocking in our validation scheme simply due to lack of manpower. An import consequence of this choice is that the class imbalance between our validation/test sets and that of Ebraheem et al. [5] is significantly different and renders our experimental results, reported as f1-scores, un-comparable with theirs. Instead, we re-test DeepER under our validation framework and use those results as a baseline for comparison.
 
@@ -273,7 +273,7 @@ Figure 9 shows that the _full_ tokenization method, which results in a much larg
 <p align='center'><img src="imgs/results-preprocessing.png" height='300px'></p>
 <p align='center'> <b>Figure 9</b>: Varying preprocessing method</p>
 
-We previously observed that the _avg-t_ models tend to perform better than _avg_ models, and often perform better than all other model baseline models. Figure 10 shows that incorporating numerical attributes to _avg-t} leads to better results on all three datasets, as does incorporating null value indicators. Less clear, however, is whether only incorporating numerical attributes or incorporating both numerical attributes and null value indicators will yield the best model performance.
+We previously observed that the _avg-t_ models tend to perform better than _avg_ models, and often perform better than all other model baseline models. Figure 10 shows that incorporating numerical attributes to _avg-t_ leads to better results on all three datasets, as does incorporating null value indicators. Less clear, however, is whether only incorporating numerical attributes or incorporating both numerical attributes and null value indicators will yield the best model performance.
 
 <p align='center'><img src="imgs/results-avg.png" height='300px'></p>
 <p align='center'> <b>Figure 10</b>: Variations on average-based attribute embeddings</p>
@@ -294,7 +294,7 @@ Deep learning offers exciting paths forward in the pursuit of more accurate and 
 
 Much more energy, however, was directed towards evaluating DeepER, a deep neural network specifically designed for the task of entity resolution. DeepER bears some similarity to the MaLSTM in that it too leverages distributed word embeddings to analyze the semantic meaning of text, and when using LSTM's to compose attribute-level embeddings from word embeddings, it behaves as a Siamese network. DeepER's key distinction from MaLSTM's is that it analyzes pairs of attributes separately rather than collectively.
 
-In testing variations of DeepER, our experimental results showing $avg-t$ model outperforming the LSTM-based models conflict with what Ebraheem et al. reported, which merits further exploration. We proposed and evaluated a number of extensions to the DeepER framework. Notably, when word embeddings are held fixed, using multiple means of composing attribute embeddings appear to offer improved performance. We also extended DeepER to support the comparison of numerical attributes and analysis of null value indicators, which also appear to result in better classifications.
+In testing variations of DeepER, our experimental results showing _avg-t_ model outperforming the LSTM-based models conflict with what Ebraheem et al. reported, which merits further exploration. We proposed and evaluated a number of extensions to the DeepER framework. Notably, when word embeddings are held fixed, using multiple means of composing attribute embeddings appear to offer improved performance. We also extended DeepER to support the comparison of numerical attributes and analysis of null value indicators, which also appear to result in better classifications.
 
 Two avenues in particular remain unexplored. DeepER currently composes attribute embeddings with one of two methods: averaging or by LSTM. A single LSTM, however, is shared across all attributes. It is possible that learning different LSTM's per attribute may lead to a more expressive and powerful model, as the semantic meaning of a token may differ depending on whether it is part of a product name or lengthy product description. Learning different LSTM's would also allow each one to be optimized for attributes of different average lengths, as some would need to be able to learn much longer-term dependencies than others.
 
